@@ -36,6 +36,18 @@ MADescription >> isSwiftSerialized: aBoolean [
 ]
 
 { #category : #'*Magritte-Swift' }
+MADescription >> swiftName [
+	"Answer the JSON element name."
+
+	^ self propertyAt: #swiftName ifAbsent: [ self defaultSwiftName ]
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription >> swiftName: aString [
+	self propertyAt: #swiftName put: aString
+]
+
+{ #category : #'*Magritte-Swift' }
 MADescription >> swiftWriter [
 	"Answer a Visitor that can be used to convert the model described by the receiver to a JSON string."
 
