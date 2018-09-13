@@ -40,6 +40,23 @@ MASwiftFunctionParameter >> name: anObject [
 	name := anObject
 ]
 
+{ #category : #printing }
+MASwiftFunctionParameter >> printSwiftOn: aStream [
+	aStream nextPutAll: name.
+	localName
+		ifNotNil: [ :val | 
+			aStream
+				nextPut: Character space;
+				nextPutAll: val ].
+	aStream nextPutAll: ': '.
+	type printSwiftOn: aStream.
+	defaultValue
+		ifNotNil: [ :val | 
+			aStream
+				nextPutAll: ' = ';
+				nextPutAll: val ]
+]
+
 { #category : #accessing }
 MASwiftFunctionParameter >> type [
 	^ type
@@ -48,21 +65,4 @@ MASwiftFunctionParameter >> type [
 { #category : #accessing }
 MASwiftFunctionParameter >> type: anObject [
 	type := anObject
-]
-
-{ #category : #writing }
-MASwiftFunctionParameter >> writeOn: aStream [
-	aStream nextPutAll: name.
-	localName
-		ifNotNil: [ :val | 
-			aStream
-				nextPut: Character space;
-				nextPutAll: val ].
-	aStream nextPutAll: ': '.
-	type writeOn: aStream.
-	defaultValue
-		ifNotNil: [ :val | 
-			aStream
-				nextPutAll: ' = ';
-				nextPutAll: val ]
 ]

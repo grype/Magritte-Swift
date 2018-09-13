@@ -27,6 +27,30 @@ MASwiftFunctionSignature >> parameters: anObject [
 	parameters := anObject
 ]
 
+{ #category : #printing }
+MASwiftFunctionSignature >> printParametersOn: aStream [
+	parameters
+		ifNotNil: [ :params | 
+			params
+				do: [ :each | each printSwiftOn: aStream ]
+				separatedBy: [ aStream nextPutAll: ', ' ] ]
+]
+
+{ #category : #printing }
+MASwiftFunctionSignature >> printSwiftOn: aStream [
+	aStream nextPut: $(.
+	self printParametersOn: aStream.
+	aStream nextPut: $).
+	throws
+		ifTrue: [ aStream nextPutAll: ' throws' ].
+	rethrows
+		ifTrue: [ aStream nextPutAll: ' rethrows' ].
+	result
+		ifNotNil: [ :aResult | 
+			aStream nextPutAll: ' -> '.
+			aResult printSwiftOn: aStream ]
+]
+
 { #category : #accessing }
 MASwiftFunctionSignature >> result [
 	^ result
@@ -55,24 +79,4 @@ MASwiftFunctionSignature >> throws [
 { #category : #accessing }
 MASwiftFunctionSignature >> throws: anObject [
 	throws := anObject
-]
-
-{ #category : #writing }
-MASwiftFunctionSignature >> writeOn: aStream [
-	aStream nextPut: $(.
-	self writeParametersOn: aStream.
-	aStream nextPut: $).
-	throws ifTrue: [ aStream nextPutAll: ' throws' ].
-	rethrows ifTrue: [ aStream nextPutAll: ' rethrows' ].
-	result ifNotNil: [ :aResult | aResult writeOn: aStream ].
-	
-]
-
-{ #category : #writing }
-MASwiftFunctionSignature >> writeParametersOn: aStream [
-	parameters
-		ifNotNil: [ :params | 
-			params
-				do: [ :each | each writeOn: aStream ]
-				separatedBy: [ aStream nextPutAll: ', ' ] ]
 ]

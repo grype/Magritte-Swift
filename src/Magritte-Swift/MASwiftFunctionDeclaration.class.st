@@ -17,9 +17,10 @@ MASwiftFunctionDeclaration >> name: anObject [
 	name := anObject
 ]
 
-{ #category : #writing }
-MASwiftFunctionDeclaration >> writeFunctionIdentifier: aStream [
+{ #category : #printing }
+MASwiftFunctionDeclaration >> printFunctionIdentifier: aStream [
 	aStream
 		nextPutAll: 'func ';
-		nextPutAll: name
+		nextPutAll: name.
+	^ true
 ]

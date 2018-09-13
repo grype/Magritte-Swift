@@ -5,6 +5,6 @@ Class {
 }
 
 { #category : #writing }
-MASwiftSourceObject >> writeOn: aStream [
+MASwiftSourceObject >> printSwiftOn: aStream [
 	self subclassResponsibility 
 ]

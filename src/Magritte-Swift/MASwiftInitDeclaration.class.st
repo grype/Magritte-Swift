@@ -4,7 +4,8 @@ Class {
 	#category : #'Magritte-Swift-Source'
 }
 
-{ #category : #writing }
-MASwiftInitDeclaration >> writeFunctionIdentifier: aStream [
-	aStream nextPutAll: 'init'
+{ #category : #printing }
+MASwiftInitDeclaration >> printFunctionIdentifier: aStream [
+	aStream nextPutAll: 'init'.
+	^ true
 ]

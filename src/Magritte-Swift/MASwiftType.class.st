@@ -1,39 +1,54 @@
 Class {
 	#name : #MASwiftType,
-	#superclass : #MASwiftSourceObject,
+	#superclass : #MASwiftAbstractType,
 	#instVars : [
 		'name',
-		'isOptional',
-		'isImplicitlyUnwrappedOptional'
+		'genericParameters'
 	],
 	#category : #'Magritte-Swift-Source'
 }
 
-{ #category : #initialization }
-MASwiftType >> initialize [
-	super initialize.
-	isOptional := false.
-	isImplicitlyUnwrappedOptional := false
+{ #category : #'instance creation' }
+MASwiftType class >> any [
+	^ self named: 'Any'
+]
+
+{ #category : #'instance creation' }
+MASwiftType class >> implicitlyUnwrappedOptionalNamed: aString [
+	^ self new
+		name: aString;
+		isImplicitlyUnwrappedOptional: true;
+		yourself
+]
+
+{ #category : #'instance creation' }
+MASwiftType class >> named: aString [
+	^ self new
+		name: aString;
+		yourself
+]
+
+{ #category : #'instance creation' }
+MASwiftType class >> optionalNamed: aString [
+	^ self new
+		name: aString;
+		isOptional: true;
+		yourself
+]
+
+{ #category : #'instance creation' }
+MASwiftType class >> self [
+	^ self named: 'Self'
 ]
 
 { #category : #accessing }
-MASwiftType >> isImplicitlyUnwrappedOptional [
-	^ isImplicitlyUnwrappedOptional
+MASwiftType >> genericParameters [
+	^ genericParameters
 ]
 
 { #category : #accessing }
-MASwiftType >> isImplicitlyUnwrappedOptional: anObject [
-	isImplicitlyUnwrappedOptional := anObject
-]
-
-{ #category : #accessing }
-MASwiftType >> isOptional [
-	^ isOptional
-]
-
-{ #category : #accessing }
-MASwiftType >> isOptional: anObject [
-	isOptional := anObject
+MASwiftType >> genericParameters: anObject [
+	genericParameters := anObject
 ]
 
 { #category : #accessing }
@@ -46,11 +61,15 @@ MASwiftType >> name: anObject [
 	name := anObject
 ]
 
-{ #category : #writing }
-MASwiftType >> writeOn: aStream [
+{ #category : #printing }
+MASwiftType >> printSwiftOn: aStream [
 	aStream nextPutAll: name.
-	isImplicitlyUnwrappedOptional
-		ifTrue: [ aStream nextPut: $! ]
-		ifFalse: [ isOptional
-				ifTrue: [ aStream nextPut: $? ] ]
+	genericParameters
+		ifNotNil: [ :val | 
+			aStream nextPut: $<.
+			val
+				do: [ :each | each printSwiftOn: aStream ]
+				separatedBy: [ aStream nextPutAll: ', ' ].
+			aStream nextPut: $> ].
+	self printOptionalOn: aStream
 ]

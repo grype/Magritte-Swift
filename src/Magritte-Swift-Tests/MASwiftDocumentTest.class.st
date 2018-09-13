@@ -24,11 +24,11 @@ MASwiftDocumentTest >> createBasicInitDeclaration [
 MASwiftDocumentTest >> createFunctionDeclarationAttributes [
 	^ OrderedCollection
 		with:
-			(MASwiftFunctionAttribute new
+			(MASwiftAttribute new
 				name: 'objc';
 				yourself)
 		with:
-			(MASwiftFunctionAttribute new
+			(MASwiftAttribute new
 				name: 'available';
 				argumentClause: '(iOS 10.0, macOS 10.12, *)';
 				yourself)

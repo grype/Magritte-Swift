@@ -2,18 +2,23 @@ Class {
 	#name : #MASwiftDocument,
 	#superclass : #WADocument,
 	#instVars : [
-		'indentation'
+		'indentationLevel'
 	],
 	#category : #'Magritte-Swift-Core'
 }
 
 { #category : #writing }
 MASwiftDocument >> assignmentExpression: anAssignmentExpresion [
-	anAssignmentExpresion writeOn: stream 
+	anAssignmentExpresion printSwiftOn: stream 
 ]
 
 { #category : #writing }
 MASwiftDocument >> closeClass [
+	stream nextPut: $}
+]
+
+{ #category : #writing }
+MASwiftDocument >> closeDeclaration [
 	stream nextPut: $}
 ]
 
@@ -43,13 +48,13 @@ MASwiftDocument >> import: aString [
 
 { #category : #formatting }
 MASwiftDocument >> indent [
-	indentation := indentation + 1
+	indentationLevel := indentationLevel + 1
 ]
 
 { #category : #initialization }
 MASwiftDocument >> initialize [
 	super initialize.
-	indentation := 0
+	indentationLevel := 0
 ]
 
 { #category : #writing }
@@ -88,13 +93,32 @@ MASwiftDocument >> openClass: aClassName inherits: aCollectionOfStrings [
 ]
 
 { #category : #writing }
+MASwiftDocument >> openDeclaration: aClassDeclaration [
+	aClassDeclaration printSwiftOn: stream.
+	stream nextPutAll: ' {'
+]
+
+{ #category : #writing }
+MASwiftDocument >> openEnum: aClassName inherits: aCollectionOfStrings [
+	stream
+		nextPutAll: 'enum ';
+		nextPutAll: aClassName.
+	aCollectionOfStrings
+		ifNotNil: [ :val | 
+			stream
+				nextPutAll: ': ';
+				nextPutAll: (val joinUsing: ', ') ].
+	stream nextPutAll: ' {'
+]
+
+{ #category : #writing }
 MASwiftDocument >> openFunctionDeclaration: aFunctionDeclaration [
-	aFunctionDeclaration writeOn: stream. stream nextPutAll: ' {'
+	aFunctionDeclaration printSwiftOn: stream. stream nextPutAll: ' {'
 ]
 
 { #category : #formatting }
 MASwiftDocument >> outdent [
-	indentation := (indentation - 1) max: 0
+	indentationLevel := (indentationLevel - 1) max: 0
 ]
 
 { #category : #writing }
@@ -128,6 +152,6 @@ MASwiftDocument >> varNamed: aVarNameString ofType: aTypeString isOptional: isOp
 
 { #category : #writing }
 MASwiftDocument >> writeIndent [
-	indentation > 0 ifFalse: [ ^ self ].
-	1 to: indentation do: [ :i | stream nextPut: Character tab ]
+	indentationLevel > 0 ifFalse: [ ^ self ].
+	1 to: indentationLevel do: [ :i | stream nextPut: Character tab ]
 ]

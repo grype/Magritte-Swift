@@ -18,6 +18,13 @@ MASwiftAssignmentExpression >> expression: anObject [
 	expression := anObject
 ]
 
+{ #category : #printing }
+MASwiftAssignmentExpression >> printSwiftOn: aStream [
+	receiver printSwiftOn: aStream.
+	aStream nextPutAll: ' = '.
+	expression printSwiftOn: aStream
+]
+
 { #category : #accessing }
 MASwiftAssignmentExpression >> receiver [
 	^ receiver
@@ -26,15 +33,4 @@ MASwiftAssignmentExpression >> receiver [
 { #category : #accessing }
 MASwiftAssignmentExpression >> receiver: anObject [
 	receiver := anObject
-]
-
-{ #category : #writing }
-MASwiftAssignmentExpression >> writeOn: aStream [
-	(receiver isKindOf: MASwiftSourceObject)
-		ifTrue: [ receiver writeOn: aStream ]
-		ifFalse: [ aStream nextPutAll: receiver greaseString ].
-	aStream nextPutAll: ' = '.
-	(expression isKindOf: MASwiftSourceObject)
-		ifTrue: [ expression writeOn: aStream ]
-		ifFalse: [ aStream nextPutAll: expression greaseString ]
 ]

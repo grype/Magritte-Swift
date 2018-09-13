@@ -11,6 +11,11 @@ MAVisitor >> visitSwiftClassInitContainer: anObject [
 ]
 
 { #category : #'*Magritte-Swift' }
+MAVisitor >> visitSwiftEnumContainer: anObject [
+	self visitElementDescription: anObject
+]
+
+{ #category : #'*Magritte-Swift' }
 MAVisitor >> visitSwiftStructContainer: anObject [
 	self visitElementDescription: anObject
 ]

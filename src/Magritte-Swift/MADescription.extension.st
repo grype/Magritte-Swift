@@ -1,6 +1,21 @@
 Extension { #name : #MADescription }
 
 { #category : #'*Magritte-Swift' }
+MADescription >> defaultSwiftCodable [
+	^self class defaultSwiftSerialized
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription class >> defaultSwiftCodable [
+	^ false
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription >> defaultSwiftCodingKey [
+	^ self defaultSwiftName 
+]
+
+{ #category : #'*Magritte-Swift' }
 MADescription >> defaultSwiftName [
 	"Answer the default JSON element name."
 
@@ -23,6 +38,18 @@ MADescription class >> defaultSwiftWriter [
 ]
 
 { #category : #'*Magritte-Swift' }
+MADescription >> isSwiftCodable [
+	"Answer the JSON element name."
+
+	^ self propertyAt: #isSwiftCodable ifAbsent: [ self defaultSwiftCodable ]
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription >> isSwiftCodable: aBoolean [
+	self propertyAt: #isSwiftCodable put: aBoolean
+]
+
+{ #category : #'*Magritte-Swift' }
 MADescription >> isSwiftSerialized [
 	"Answer whether the described object should be serialized to JSON."
 
@@ -33,6 +60,18 @@ MADescription >> isSwiftSerialized [
 MADescription >> isSwiftSerialized: aBoolean [
 
 	^ self propertyAt: #swiftSerialized put: aBoolean
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription >> swiftCodingKey [
+	"Answer the JSON element name."
+
+	^ self propertyAt: #swiftCodingKey ifAbsent: [ self defaultSwiftCodingKey ]
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription >> swiftCodingKey: aString [
+	self propertyAt: #swiftCodingKey put: aString
 ]
 
 { #category : #'*Magritte-Swift' }

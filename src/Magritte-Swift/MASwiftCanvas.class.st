@@ -43,6 +43,25 @@ MASwiftCanvas >> cr [
 ]
 
 { #category : #public }
+MASwiftCanvas >> declaration: aDeclaration with: aBlock [
+	^ (self
+		brush:
+			(MASwiftDeclarationBrush new
+				declaration: aDeclaration;
+				yourself)) with: aBlock
+]
+
+{ #category : #public }
+MASwiftCanvas >> enum: aStructName inherits: aCollectionOfStrings with: aBlock [
+	^ (self
+		brush:
+			(MASwiftEnumBrush new
+				name: aStructName;
+				inherits: aCollectionOfStrings;
+				yourself)) with: aBlock
+]
+
+{ #category : #public }
 MASwiftCanvas >> function: aFunctionDeclaration with: aBlock [
 	^ (self
 		brush:

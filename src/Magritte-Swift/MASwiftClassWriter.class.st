@@ -72,11 +72,14 @@ MASwiftClassWriter >> visitStringDescription: aDescription [
 
 { #category : #'visiting-description' }
 MASwiftClassWriter >> visitSwiftClassContainer: aDescription [
-	| requiredDescriptions initContainer |
+	| requiredDescriptions initContainer classDeclaration |
 
+	classDeclaration := MASwiftClassDeclaration new
+		name: aDescription swiftName;
+		inheritanceTypes: (aDescription inheritsFrom ifNotNil: [ :val | val asOrderedCollection ]);
+		yourself.
 	stream
-		class: aDescription swiftName
-		inherits: aDescription inheritsFrom
+		declaration: classDeclaration
 		with: [ (aDescription children sort: [ :a :b | a priority < b priority ])
 				do: [ :each | 
 					each isSwiftSerialized
@@ -106,6 +109,17 @@ MASwiftClassWriter >> visitSwiftClassInitContainer: aContainer [
 							(MASwiftAssignmentExpression new
 								receiver: each swiftName;
 								expression: (self canonicalArgumentNameFrom: each swiftName)) ] ]
+]
+
+{ #category : #'visiting-description' }
+MASwiftClassWriter >> visitSwiftEnumContainer: aDescription [
+	stream
+		enum: aDescription swiftName
+		inherits: aDescription inheritsFrom
+		with: [ aDescription
+				do: [ :each | 
+					each isSwiftCodable
+						ifTrue: [ each writeSwiftDeclarationOf: self object on: stream ] ] ]
 ]
 
 { #category : #'visiting-description' }

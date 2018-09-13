@@ -1,23 +1,23 @@
 Class {
 	#name : #MASwiftAbstractFunctionDeclaration,
-	#superclass : #MASwiftSourceObject,
+	#superclass : #MASwiftAbstractDeclaration,
 	#instVars : [
-		'attributes',
 		'declarationModifiers',
 		'genericParameters',
-		'signature'
+		'signature',
+		'body'
 	],
 	#category : #'Magritte-Swift-Source'
 }
 
 { #category : #accessing }
-MASwiftAbstractFunctionDeclaration >> attributes [
-	^ attributes
+MASwiftAbstractFunctionDeclaration >> body [
+	^ body
 ]
 
 { #category : #accessing }
-MASwiftAbstractFunctionDeclaration >> attributes: anObject [
-	attributes := anObject
+MASwiftAbstractFunctionDeclaration >> body: anObject [
+	body := anObject
 ]
 
 { #category : #accessing }
@@ -40,6 +40,53 @@ MASwiftAbstractFunctionDeclaration >> genericParameters: anObject [
 	genericParameters := anObject
 ]
 
+{ #category : #printing }
+MASwiftAbstractFunctionDeclaration >> printDeclarationModifiersOn: aStream [
+	declarationModifiers isEmptyOrNil
+		ifTrue: [ ^ false ].
+
+	declarationModifiers do: [ :aString | aStream nextPutAll: aString ] separatedBy: [ aStream nextPut: Character space ].
+	^ true
+]
+
+{ #category : #printing }
+MASwiftAbstractFunctionDeclaration >> printFunctionIdentifier: aStream [
+	self subclassResponsibility 
+]
+
+{ #category : #printing }
+MASwiftAbstractFunctionDeclaration >> printGenericParametersOn: aStream [
+	genericParameters isEmptyOrNil
+		ifTrue: [ ^ false ].
+
+	aStream nextPut: $<.
+	genericParameters do: [ :each | each printSwiftOn: aStream ] separatedBy: [ aStream nextPutAll: ', ' ].
+	aStream nextPut: $>.
+	^ true
+]
+
+{ #category : #printing }
+MASwiftAbstractFunctionDeclaration >> printSignatureOn: aStream [
+	signature ifNil: [ aStream nextPutAll: '()' ] ifNotNil: [ :sig | sig printSwiftOn: aStream ].
+	^ true
+]
+
+{ #category : #printing }
+MASwiftAbstractFunctionDeclaration >> printSwiftOn: aStream [
+	| last |
+
+	last := false.
+	{[ self printAttributesOn: aStream ].
+	[ self printDeclarationModifiersOn: aStream ].
+	[ self printFunctionIdentifier: aStream ].
+	[ self printGenericParametersOn: aStream ].
+	[ self printSignatureOn: aStream ]}
+		do: [ :each | 
+			last
+				ifTrue: [ aStream nextPut: Character space ].
+			last := each value ]
+]
+
 { #category : #accessing }
 MASwiftAbstractFunctionDeclaration >> signature [
 	^ signature
@@ -48,53 +95,4 @@ MASwiftAbstractFunctionDeclaration >> signature [
 { #category : #accessing }
 MASwiftAbstractFunctionDeclaration >> signature: anObject [
 	signature := anObject
-]
-
-{ #category : #writing }
-MASwiftAbstractFunctionDeclaration >> writeAttributesOn: aStream [
-	attributes ifNil: [ ^ self ].
-	attributes
-		do: [ :each | 
-			each writeOn: aStream.
-			aStream nextPut: Character space ]
-]
-
-{ #category : #writing }
-MASwiftAbstractFunctionDeclaration >> writeDeclarationModifiersOn: aStream [
-	declarationModifiers
-		ifNotNil: [ :modifiers | 
-			modifiers
-				do: [ :aString | 
-					aStream
-						nextPutAll: aString;
-						nextPut: Character space ] ]
-]
-
-{ #category : #writing }
-MASwiftAbstractFunctionDeclaration >> writeFunctionIdentifier: aStream [
-	self subclassResponsibility 
-]
-
-{ #category : #writing }
-MASwiftAbstractFunctionDeclaration >> writeGenericParametersOn: aStream [
-	genericParameters
-		ifNotNil: [ :params | 
-			aStream
-				nextPut: $<;
-				nextPutAll: (params joinUsing: ', ');
-				nextPut: $> ]
-]
-
-{ #category : #writing }
-MASwiftAbstractFunctionDeclaration >> writeOn: aStream [
-	self writeAttributesOn: aStream.
-	self writeDeclarationModifiersOn: aStream.
-	self writeFunctionIdentifier: aStream.
-	self writeGenericParametersOn: aStream.
-	self writeSignatureOn: aStream
-]
-
-{ #category : #writing }
-MASwiftAbstractFunctionDeclaration >> writeSignatureOn: aStream [
-	signature ifNil: [ aStream nextPutAll: '()' ] ifNotNil: [ :sig | sig writeOn: aStream ]
 ]
