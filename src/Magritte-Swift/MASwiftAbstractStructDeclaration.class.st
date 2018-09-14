@@ -125,14 +125,20 @@ MASwiftAbstractStructDeclaration >> printSwiftOn: aStream [
 	{[ self printAttributesOn: aStream ].
 	[ self printAccessLevelModifiersOn: aStream ].
 	[ self printStructIdentifierOn: aStream ].
-	[ self printNameOn: aStream ].
-	[ self printInheritanceTypesOn: aStream ].
-	[ self printGenericParametersOn: aStream ].
-	[ self printWhereRequirementsOn: aStream ]}
-		do: [ :each | 
-			last
-				ifTrue: [ aStream nextPut: Character space ].
-			last := each value ]
+	[ self printNameOn: aStream ]}
+		do: [ :each | last := each value ]
+		separatedBy: [ last
+				ifTrue: [ aStream nextPut: Character space ] ].
+	inheritanceTypes isEmptyOrNil
+		ifFalse: [ aStream nextPut: Character space.
+			self printInheritanceTypesOn: aStream ].
+	genericParameters isEmptyOrNil
+		ifFalse: [ aStream nextPut: Character space.
+			self printGenericParametersOn: aStream ].
+	whereRequirements isEmptyOrNil
+		ifTrue: [ ^ self ].
+	aStream nextPut: Character space.
+	self printWhereRequirementsOn: aStream
 ]
 
 { #category : #printing }

@@ -11,7 +11,7 @@ MASwiftTupleTypeTest >> testPrintSwiftOn [
 	declaration := MASwiftTupleType new
 		types:
 			{#Foo.
-			'Bar'.
+			#Bar.
 			(MASwiftType new
 				name: #Array;
 				genericParameters: #(#String);

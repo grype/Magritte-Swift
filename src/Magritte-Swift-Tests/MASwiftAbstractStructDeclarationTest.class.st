@@ -1,11 +1,11 @@
 Class {
-	#name : #MASwiftClassDeclarationTest,
+	#name : #MASwiftAbstractStructDeclarationTest,
 	#superclass : #MASwiftSourceTestCase,
 	#category : #'Magritte-Swift-Tests'
 }
 
 { #category : #tests }
-MASwiftClassDeclarationTest >> testPrintSwiftOn [
+MASwiftAbstractStructDeclarationTest >> testPrintSwiftOn [
 	| declaration |
 	declaration := MASwiftClassDeclaration new name: #Foo; yourself.
 	self assertDeclaration: declaration prints: 'class Foo'

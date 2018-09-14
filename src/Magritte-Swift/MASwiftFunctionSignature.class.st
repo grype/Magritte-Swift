@@ -46,6 +46,7 @@ MASwiftFunctionSignature >> printSwiftOn: aStream [
 	rethrows
 		ifTrue: [ aStream nextPutAll: ' rethrows' ].
 	result
+		ifNil: [ aStream nextPutAll: ' -> Void' ]
 		ifNotNil: [ :aResult | 
 			aStream nextPutAll: ' -> '.
 			aResult printSwiftOn: aStream ]

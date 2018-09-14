@@ -15,10 +15,10 @@ MASwiftDictionaryTypeTest >> testPrintSwiftOn [
 	self assertDeclaration: declaration prints: '[Key:Value]'.
 
 	declaration := MASwiftDictionaryType new
-		keyType: 'AnyHashable';
+		keyType: #AnyHashable;
 		valueType:
 			(MASwiftType new
-				name: 'Array';
+				name: #Array;
 				genericParameters: #(#String);
 				yourself);
 		yourself.

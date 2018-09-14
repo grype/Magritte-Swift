@@ -78,13 +78,13 @@ MASwiftAbstractFunctionDeclaration >> printSwiftOn: aStream [
 	last := false.
 	{[ self printAttributesOn: aStream ].
 	[ self printDeclarationModifiersOn: aStream ].
-	[ self printFunctionIdentifier: aStream ].
-	[ self printGenericParametersOn: aStream ].
-	[ self printSignatureOn: aStream ]}
-		do: [ :each | 
-			last
-				ifTrue: [ aStream nextPut: Character space ].
-			last := each value ]
+	[ self printFunctionIdentifier: aStream ]}
+		do: [ :each | last := each value ]
+		separatedBy: [ last
+				ifTrue: [ aStream nextPut: Character space ] ].
+
+	self printGenericParametersOn: aStream.
+	self printSignatureOn: aStream
 ]
 
 { #category : #accessing }
