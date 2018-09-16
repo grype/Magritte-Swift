@@ -9,6 +9,11 @@ Class {
 	#category : #'Magritte-Swift-Source'
 }
 
+{ #category : #'instance-creation' }
+MASwiftCaseDeclaration class >> named: aString [
+	^ self new name: aString asSymbol
+]
+
 { #category : #accessing }
 MASwiftCaseDeclaration >> assignedValue [
 	^ assignedValue

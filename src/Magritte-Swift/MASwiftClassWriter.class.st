@@ -36,18 +36,6 @@ MASwiftClassWriter >> functionSignatureFromDescriptions: aCollectionOfDescriptio
 		yourself
 ]
 
-{ #category : #utility }
-MASwiftClassWriter >> requiredChildDescriptionsOf: aDescription [
-	^ (aDescription children
-		select: [ :each | each isSwiftSerialized and: [ each isRequired ] ])
-		sort: [ :a :b | a priority < b priority ]
-]
-
-{ #category : #'visiting-description' }
-MASwiftClassWriter >> serializedChildDescriptionsOf: aDescription [
-	^ aDescription children select: #isSwiftSerialized
-]
-
 { #category : #'visiting-description' }
 MASwiftClassWriter >> visitBooleanDescription: aDescription [
 	aDescription asSwiftVariableDeclaration
@@ -82,24 +70,35 @@ MASwiftClassWriter >> visitStringDescription: aDescription [
 
 { #category : #'visiting-description' }
 MASwiftClassWriter >> visitSwiftClassContainer: aDescription [
-	| requiredDescriptions initContainer classDeclaration |
+	| requiredDescriptions classDeclaration codableDescriptions |
 
 	classDeclaration := MASwiftClassDeclaration new
 		name: aDescription swiftName;
 		inheritanceTypes: (aDescription inheritsFrom ifNotNil: [ :val | val asOrderedCollection ]);
 		yourself.
+		
+	codableDescriptions := aDescription swiftCodableChildren sort: [ :a :b | a priority < b priority ].
+	codableDescriptions isEmptyOrNil ifFalse: [ classDeclaration inheritanceTypes add: #Decodable ].
 
 	stream
 		declaration: classDeclaration
-		with: [ ((self serializedChildDescriptionsOf: aDescription) sort: [ :a :b | a priority < b priority ])
+		with: [ (aDescription swiftSerializableChildren sort: [ :a :b | a priority < b priority ])
 				do: [ :each | each writeSwiftDeclarationOf: self object on: stream ]
 				separatedBy: [ stream cr ].
-				
+
 			stream cr; cr.
 
-			requiredDescriptions := self requiredChildDescriptionsOf: aDescription.
-			initContainer := MASwiftClassInitContainer withAll: requiredDescriptions.
-			self visit: initContainer ]
+			requiredDescriptions := aDescription swiftSerializableRequiredChildren sort: [ :a :b | a priority < b priority ].
+			self visit: (MASwiftClassInitContainer withAll: requiredDescriptions).
+			
+			stream cr; cr.
+
+			self
+				visit:
+					((MASwiftEnumContainer withAll: codableDescriptions)
+						swiftName: #Codable;
+						inheritsFrom: #(#String #CodingKey);
+						yourself) ]
 ]
 
 { #category : #'visiting-description' }
@@ -128,14 +127,13 @@ MASwiftClassWriter >> visitSwiftEnumContainer: aDescription [
 
 	enum := MASwiftEnumDeclaration new
 		name: aDescription swiftName;
-		inheritsFrom: aDescription inheritsFrom;
+		inheritanceTypes: aDescription inheritsFrom;
 		yourself.
 	stream
 		declaration: enum
-		with: [ aDescription
-				do: [ :each | 
-					each isSwiftCodable
-						ifTrue: [ each writeSwiftDeclarationOf: self object on: stream ] ] ]
+		with: [ aDescription swiftCodableChildren
+				do: [ :each | stream declaration: (MASwiftCaseDeclaration named: each swiftName) ]
+				separatedBy: [ stream cr ] ]
 ]
 
 { #category : #'visiting-description' }
