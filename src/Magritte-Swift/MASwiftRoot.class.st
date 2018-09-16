@@ -21,7 +21,7 @@ MASwiftRoot >> imports [
 { #category : #initialization }
 MASwiftRoot >> initialize [
 	super initialize.
-	imports := OrderedCollection with: 'Foundation'.
+	imports := OrderedCollection with: (MASwiftImportDeclaration named: #Foundation).
 	preambleComment := 'This file was generated'
 ]
 
@@ -42,7 +42,7 @@ MASwiftRoot >> preambleComment: anObject [
 
 { #category : #writing }
 MASwiftRoot >> writeImportsOn: aDocument [
-	imports do: [ :anImport | aDocument import: anImport ]
+	imports do: [ :anImport | aDocument declaration: anImport ]
 ]
 
 { #category : #writing }

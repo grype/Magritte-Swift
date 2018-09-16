@@ -7,10 +7,11 @@ Class {
 { #category : #utility }
 MASwiftClassWriter >> canonicalArgumentNameFrom: aString [
 	| prefix |
+
 	prefix := aString first isVowel
 		ifTrue: [ 'an' ]
 		ifFalse: [ 'a' ].
-	^ prefix, aString capitalized.
+	^ (prefix , aString capitalized) asSymbol
 ]
 
 { #category : #private }
@@ -43,13 +44,20 @@ MASwiftClassWriter >> requiredChildDescriptionsOf: aDescription [
 ]
 
 { #category : #'visiting-description' }
+MASwiftClassWriter >> serializedChildDescriptionsOf: aDescription [
+	^ aDescription children select: #isSwiftSerialized
+]
+
+{ #category : #'visiting-description' }
 MASwiftClassWriter >> visitBooleanDescription: aDescription [
-	stream varNamed: aDescription swiftName ofType: 'Bool' isOptional: aDescription isRequired not
+	aDescription asSwiftVariableDeclaration
+		ifNotNil: [ :aDeclaration | stream declaration: aDeclaration ]
 ]
 
 { #category : #'visiting-description' }
 MASwiftClassWriter >> visitColorDescription: aDescription [
-	stream varNamed: aDescription swiftName ofType: 'UIColor' isOptional: aDescription isRequired not
+	aDescription asSwiftVariableDeclaration
+		ifNotNil: [ :aDeclaration | stream declaration: aDeclaration ]
 ]
 
 { #category : #'visiting-description' }
@@ -62,12 +70,14 @@ MASwiftClassWriter >> visitContainer: aDescription [
 
 { #category : #'visiting-description' }
 MASwiftClassWriter >> visitDateAndTimeDescription: aDescription [
-	stream varNamed: aDescription swiftName ofType: 'Date' isOptional: aDescription isRequired not
+	aDescription asSwiftVariableDeclaration
+		ifNotNil: [ :aDeclaration | stream declaration: aDeclaration ]
 ]
 
 { #category : #'visiting-description' }
 MASwiftClassWriter >> visitStringDescription: aDescription [
-	stream varNamed: aDescription swiftName ofType: 'String' isOptional: aDescription isRequired not
+	aDescription asSwiftVariableDeclaration
+		ifNotNil: [ :aDeclaration | stream declaration: aDeclaration ]
 ]
 
 { #category : #'visiting-description' }
@@ -78,14 +88,14 @@ MASwiftClassWriter >> visitSwiftClassContainer: aDescription [
 		name: aDescription swiftName;
 		inheritanceTypes: (aDescription inheritsFrom ifNotNil: [ :val | val asOrderedCollection ]);
 		yourself.
+
 	stream
 		declaration: classDeclaration
-		with: [ (aDescription children sort: [ :a :b | a priority < b priority ])
-				do: [ :each | 
-					each isSwiftSerialized
-						ifTrue: [ each writeSwiftDeclarationOf: self object on: stream ] ].
-
-			stream cr.
+		with: [ ((self serializedChildDescriptionsOf: aDescription) sort: [ :a :b | a priority < b priority ])
+				do: [ :each | each writeSwiftDeclarationOf: self object on: stream ]
+				separatedBy: [ stream cr ].
+				
+			stream cr; cr.
 
 			requiredDescriptions := self requiredChildDescriptionsOf: aDescription.
 			initContainer := MASwiftClassInitContainer withAll: requiredDescriptions.
@@ -101,21 +111,27 @@ MASwiftClassWriter >> visitSwiftClassInitContainer: aContainer [
 		signature: (self functionSignatureFromDescriptions: children);
 		yourself.
 	stream
-		function: init
+		declaration: init
 		with: [ children
 				do: [ :each | 
 					stream
-						assignmentExpression:
+						expression:
 							(MASwiftAssignmentExpression new
 								receiver: each swiftName;
-								expression: (self canonicalArgumentNameFrom: each swiftName)) ] ]
+								expression: (self canonicalArgumentNameFrom: each swiftName)) ]
+				separatedBy: [ stream cr ] ]
 ]
 
 { #category : #'visiting-description' }
 MASwiftClassWriter >> visitSwiftEnumContainer: aDescription [
+	| enum |
+
+	enum := MASwiftEnumDeclaration new
+		name: aDescription swiftName;
+		inheritsFrom: aDescription inheritsFrom;
+		yourself.
 	stream
-		enum: aDescription swiftName
-		inherits: aDescription inheritsFrom
+		declaration: enum
 		with: [ aDescription
 				do: [ :each | 
 					each isSwiftCodable
@@ -124,9 +140,14 @@ MASwiftClassWriter >> visitSwiftEnumContainer: aDescription [
 
 { #category : #'visiting-description' }
 MASwiftClassWriter >> visitSwiftStructContainer: aDescription [
+	| enum |
+
+	enum := MASwiftStructDeclaration new
+		name: aDescription swiftName;
+		inheritsFrom: aDescription inheritsFrom;
+		yourself.
 	stream
-		struct: aDescription swiftName
-		inherits: aDescription inheritsFrom
+		declaration: enum
 		with: [ aDescription
 				do: [ :each | 
 					each isSwiftSerialized
@@ -135,43 +156,30 @@ MASwiftClassWriter >> visitSwiftStructContainer: aDescription [
 
 { #category : #'visiting-description' }
 MASwiftClassWriter >> visitTimeDescription: aDescription [ 
-	stream varNamed: aDescription swiftName ofType: 'Date' isOptional: aDescription isRequired not
+	aDescription asSwiftVariableDeclaration
+		ifNotNil: [ :aDeclaration | stream declaration: aDeclaration ]
 ]
 
 { #category : #'visiting-description' }
 MASwiftClassWriter >> visitTimeStampDescription: aDescription [
-	stream varNamed: aDescription swiftName ofType: 'Date' isOptional: aDescription isRequired not
+	aDescription asSwiftVariableDeclaration
+		ifNotNil: [ :aDeclaration | stream declaration: aDeclaration ]
 ]
 
 { #category : #'visiting-description' }
 MASwiftClassWriter >> visitToManyRelationDescription: aDescription [
-	| classes |
-
-	classes := aDescription classes.
-	classes size > 1
-		ifTrue: [ stream
-				varNamed: aDescription swiftName
-				ofType:
-					('[{1}:{2}]'
-						format:
-							{classes first swiftClassDescription swiftName.
-							classes second swiftClassDescription swiftName})
-				isOptional: aDescription isRequired not ]
-		ifFalse: [ stream
-				varNamed: aDescription swiftName
-				ofType: ('[{1}]' format: {classes first swiftClassDescription swiftName})
-				isOptional: aDescription isRequired not ]
+	aDescription asSwiftVariableDeclaration
+		ifNotNil: [ :aDeclaration | stream declaration: aDeclaration ]
 ]
 
 { #category : #'visiting-description' }
 MASwiftClassWriter >> visitToOneRelationDescription: aDescription [
-	stream
-		varNamed: aDescription swiftName
-		ofType: aDescription classes first swiftClassDescription swiftName
-		isOptional: aDescription isRequired not
+	aDescription asSwiftVariableDeclaration
+		ifNotNil: [ :aDeclaration | stream declaration: aDeclaration ]
 ]
 
 { #category : #'visiting-description' }
-MASwiftClassWriter >> visitUrlDescription: aMAUrlDescription [ 
-	stream varNamed: aMAUrlDescription swiftName ofType: 'URL' isOptional: aMAUrlDescription isRequired not
+MASwiftClassWriter >> visitUrlDescription: aDescription [
+	aDescription asSwiftVariableDeclaration
+		ifNotNil: [ :aDeclaration | stream declaration: aDeclaration ]
 ]

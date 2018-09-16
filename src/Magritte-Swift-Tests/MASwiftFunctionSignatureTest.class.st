@@ -9,10 +9,10 @@ MASwiftFunctionSignatureTest >> testPrintSwiftOn [
 	| declaration |
 
 	declaration := MASwiftFunctionSignature new.
-	self assertDeclaration: declaration prints: '() -> Void'.
-
+	self assertDeclaration: declaration prints: '()'.
+	
 	declaration throws: true.
-	self assertDeclaration: declaration prints: '() throws -> Void'.
+	self assertDeclaration: declaration prints: '() throws'.
 
 	declaration result: #String.
 	self assertDeclaration: declaration prints: '() throws -> String'.

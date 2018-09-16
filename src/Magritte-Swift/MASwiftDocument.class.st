@@ -8,22 +8,7 @@ Class {
 }
 
 { #category : #writing }
-MASwiftDocument >> assignmentExpression: anAssignmentExpresion [
-	anAssignmentExpresion printSwiftOn: stream 
-]
-
-{ #category : #writing }
-MASwiftDocument >> closeClass [
-	stream nextPut: $}
-]
-
-{ #category : #writing }
 MASwiftDocument >> closeDeclaration [
-	stream nextPut: $}
-]
-
-{ #category : #writing }
-MASwiftDocument >> closeFunctionDeclaration [
 	stream nextPut: $}
 ]
 
@@ -34,16 +19,19 @@ MASwiftDocument >> comment: aString [
 		ifFalse: [ self singlelineComment: aString ]
 ]
 
-{ #category : #writing }
+{ #category : #'writing-formatting' }
 MASwiftDocument >> cr [
 	stream nextPut: Character cr
 ]
 
 { #category : #writing }
-MASwiftDocument >> import: aString [
-	stream
-		nextPutAll: 'import ';
-		nextPutAll: aString
+MASwiftDocument >> declaration: aDeclaration [
+	aDeclaration printSwiftOn: stream
+]
+
+{ #category : #writing }
+MASwiftDocument >> expression: anAssignmentExpresion [
+	anAssignmentExpresion printSwiftOn: stream 
 ]
 
 { #category : #formatting }
@@ -58,8 +46,8 @@ MASwiftDocument >> initialize [
 ]
 
 { #category : #writing }
-MASwiftDocument >> literal: aString [
-	stream nextPutAll: aString
+MASwiftDocument >> literal: anObject [
+	stream nextPutAll: anObject greaseString
 ]
 
 { #category : #writing }
@@ -80,40 +68,9 @@ MASwiftDocument >> multilineComment: aString [
 ]
 
 { #category : #writing }
-MASwiftDocument >> openClass: aClassName inherits: aCollectionOfStrings [
-	stream
-		nextPutAll: 'class ';
-		nextPutAll: aClassName.
-	aCollectionOfStrings
-		ifNotNil: [ :val | 
-			stream
-				nextPutAll: ': ';
-				nextPutAll: (val joinUsing: ', ') ].
-	stream nextPutAll: ' {'
-]
-
-{ #category : #writing }
 MASwiftDocument >> openDeclaration: aClassDeclaration [
 	aClassDeclaration printSwiftOn: stream.
 	stream nextPutAll: ' {'
-]
-
-{ #category : #writing }
-MASwiftDocument >> openEnum: aClassName inherits: aCollectionOfStrings [
-	stream
-		nextPutAll: 'enum ';
-		nextPutAll: aClassName.
-	aCollectionOfStrings
-		ifNotNil: [ :val | 
-			stream
-				nextPutAll: ': ';
-				nextPutAll: (val joinUsing: ', ') ].
-	stream nextPutAll: ' {'
-]
-
-{ #category : #writing }
-MASwiftDocument >> openFunctionDeclaration: aFunctionDeclaration [
-	aFunctionDeclaration printSwiftOn: stream. stream nextPutAll: ' {'
 ]
 
 { #category : #formatting }
@@ -139,18 +96,7 @@ MASwiftDocument >> string: aString [
 	stream nextPut: $"; nextPutAll: (aString copyReplaceAll: '"' with: '\"'); nextPut: $"
 ]
 
-{ #category : #writing }
-MASwiftDocument >> varNamed: aVarNameString ofType: aTypeString isOptional: isOptional [
-	stream
-		nextPutAll: 'var ';
-		nextPutAll: aVarNameString;
-		nextPutAll: ': ';
-		nextPutAll: aTypeString.
-	isOptional
-		ifTrue: [ stream nextPut: $? ]
-]
-
-{ #category : #writing }
+{ #category : #'writing-formatting' }
 MASwiftDocument >> writeIndent [
 	indentationLevel > 0 ifFalse: [ ^ self ].
 	1 to: indentationLevel do: [ :i | stream nextPut: Character tab ]

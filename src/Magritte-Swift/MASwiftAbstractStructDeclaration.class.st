@@ -42,6 +42,11 @@ MASwiftAbstractStructDeclaration >> genericParameters: anObject [
 	genericParameters := anObject
 ]
 
+{ #category : #testing }
+MASwiftAbstractStructDeclaration >> hasSubexpressions [
+	^ expressions isEmptyOrNil not
+]
+
 { #category : #accessing }
 MASwiftAbstractStructDeclaration >> inheritanceTypes [
 	^ inheritanceTypes

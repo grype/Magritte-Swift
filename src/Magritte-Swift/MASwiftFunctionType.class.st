@@ -31,6 +31,7 @@ MASwiftFunctionType >> printSwiftOn: aStream [
 			aStream nextPut: Character space ].
 
 	signature printSwiftOn: aStream.
+	signature result ifNil: [ aStream nextPutAll: ' -> Void' ].
 	hasOptional
 		ifTrue: [ aStream nextPut: $) ].
 	self printOptionalOn: aStream

@@ -30,7 +30,7 @@ MASwiftDocumentTest >> createFunctionDeclarationAttributes [
 		with:
 			(MASwiftAttribute new
 				name: 'available';
-				argumentClause: '(iOS 10.0, macOS 10.12, *)';
+				argumentClause: 'iOS 10.0, macOS 10.12, *';
 				yourself)
 ]
 
@@ -86,23 +86,6 @@ MASwiftDocumentTest >> setUp [
 ]
 
 { #category : #tests }
-MASwiftDocumentTest >> testAssignmentExpression [
-	document
-		assignmentExpression:
-			(MASwiftAssignmentExpression new
-				receiver: 'foo';
-				expression: 'bar';
-				yourself).
-	self assert: document stream contents equals: 'foo = bar'
-]
-
-{ #category : #tests }
-MASwiftDocumentTest >> testCloseClass [
-	document closeClass.
-	self assert: document stream contents equals: '}'
-]
-
-{ #category : #tests }
 MASwiftDocumentTest >> testComment [
 	document comment: 'I am a multi-line comment'.
 	self assert: document stream contents equals: '// I am a multi-line comment'.
@@ -124,15 +107,30 @@ MASwiftDocumentTest >> testCr [
 ]
 
 { #category : #tests }
+MASwiftDocumentTest >> testExpression [
+	document
+		expression:
+			(MASwiftAssignmentExpression new
+				receiver: #foo;
+				expression: #bar;
+				yourself).
+	self assert: document stream contents equals: 'foo = bar'
+]
+
+{ #category : #tests }
 MASwiftDocumentTest >> testImport [
-	document import: 'Foundation'.
+	document declaration: (MASwiftImportDeclaration named: #Foundation).
 	self assert: document stream contents equals: 'import Foundation'
 ]
 
 { #category : #tests }
 MASwiftDocumentTest >> testLiteral [
-	document literal: 'Literal'.
-	self assert: document stream contents equals: 'Literal'
+	document literal: 'nil'.
+	self assert: document stream contents equals: 'nil'.
+
+	self resetDocument.
+	document literal: #nil.
+	self assert: document stream contents equals: 'nil'
 ]
 
 { #category : #tests }
@@ -157,7 +155,7 @@ MASwiftDocumentTest >> testOpenBasicFunctionDeclaration [
 	| func |
 
 	func := self createBasicFunctionDeclaration.
-	document openFunctionDeclaration: func.
+	document openDeclaration: func.
 	self assert: document stream contents equals: 'func foo() {'
 ]
 
@@ -166,14 +164,8 @@ MASwiftDocumentTest >> testOpenBasicInitDeclaration [
 	| func |
 
 	func := self createBasicInitDeclaration.
-	document openFunctionDeclaration: func.
+	document openDeclaration: func.
 	self assert: document stream contents equals: 'init() {'
-]
-
-{ #category : #tests }
-MASwiftDocumentTest >> testOpenClassInherits [
-	document openClass: 'Foo' inherits: #(#Bar #Baz).
-	self assert: document stream contents equals: 'class Foo: Bar, Baz {'
 ]
 
 { #category : #tests }
@@ -193,7 +185,7 @@ MASwiftDocumentTest >> testOpenFunctionDeclarationWithAttributes [
 
 	func := self createBasicFunctionDeclaration.
 	func attributes: self createFunctionDeclarationAttributes.
-	document openFunctionDeclaration: func.
+	document openDeclaration: func.
 	self
 		assert: document stream contents
 		equals: '@objc @available(iOS 10.0, macOS 10.12, *) func foo() {'.
@@ -205,7 +197,7 @@ MASwiftDocumentTest >> testOpenFunctionDeclarationWithGenericParameters [
 
 	func := self createBasicFunctionDeclaration.
 	func genericParameters: #(#One #Two).
-	document openFunctionDeclaration: func.
+	document openDeclaration: func.
 	self
 		assert: document stream contents
 		equals: 'func foo<One, Two>() {'.
@@ -217,7 +209,7 @@ MASwiftDocumentTest >> testOpenFunctionDeclarationWithParameters [
 
 	func := self createBasicFunctionDeclaration.
 	func signature: self createFunctionDeclarationSignature.
-	document openFunctionDeclaration: func.
+	document openDeclaration: func.
 	self assert: document stream contents equals: 'func foo(_: Foo, bar: Bar!, baz aBaz: Baz? = nil) {'
 ]
 
@@ -249,7 +241,26 @@ MASwiftDocumentTest >> testString [
 ]
 
 { #category : #tests }
-MASwiftDocumentTest >> testVarNamedOfTypeIsOptional [
-	document varNamed: 'foo' ofType: 'String' isOptional: true.
-	self assert: document stream contents equals: 'var foo: String?'
+MASwiftDocumentTest >> testWriteIndent [
+	document
+		indent;
+		writeIndent.
+	self assert: document stream contents equals: Character tab greaseString.
+
+	self resetDocument.
+
+	document
+		indent;
+		indent;
+		writeIndent.
+	self assert: document stream contents equals: Character tab greaseString , Character tab greaseString.
+	
+	self resetDocument.
+
+	document
+		indent;
+		outdent;
+		indent;
+		writeIndent.
+	self assert: document stream contents equals: Character tab greaseString
 ]

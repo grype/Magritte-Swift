@@ -1,13 +1,18 @@
 Extension { #name : #MADescription }
 
 { #category : #'*Magritte-Swift' }
-MADescription >> defaultSwiftCodable [
-	^self class defaultSwiftSerialized
+MADescription >> asSwiftVariableDeclaration [
+	^ nil
 ]
 
 { #category : #'*Magritte-Swift' }
 MADescription class >> defaultSwiftCodable [
 	^ false
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription >> defaultSwiftCodable [
+	^self class defaultSwiftSerialized
 ]
 
 { #category : #'*Magritte-Swift' }
@@ -23,13 +28,13 @@ MADescription >> defaultSwiftName [
 ]
 
 { #category : #'*Magritte-Swift' }
-MADescription >> defaultSwiftSerialized [
-	^self class defaultSwiftSerialized
+MADescription class >> defaultSwiftSerialized [
+	^self defaultVisible
 ]
 
 { #category : #'*Magritte-Swift' }
-MADescription class >> defaultSwiftSerialized [
-	^self defaultVisible
+MADescription >> defaultSwiftSerialized [
+	^self class defaultSwiftSerialized
 ]
 
 { #category : #'*Magritte-Swift' }

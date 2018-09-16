@@ -12,26 +12,6 @@ MASwiftCanvas class >> builder [
 ]
 
 { #category : #public }
-MASwiftCanvas >> assignmentExpression: anAssignmentExpression [
-	self document writeIndent; assignmentExpression: anAssignmentExpression; cr
-]
-
-{ #category : #public }
-MASwiftCanvas >> class: aClassName inherits: aCollectionOfStrings with: aBlock [
-	^ (self
-		brush:
-			(MASwiftClassBrush new
-				name: aClassName;
-				inherits: aCollectionOfStrings;
-				yourself)) with: aBlock
-]
-
-{ #category : #public }
-MASwiftCanvas >> closeClass [
-	self document closeClass
-]
-
-{ #category : #public }
 MASwiftCanvas >> contents [
 	^ self document stream contents
 ]
@@ -40,6 +20,15 @@ MASwiftCanvas >> contents [
 MASwiftCanvas >> cr [
 	self flush.
 	self document cr
+]
+
+{ #category : #public }
+MASwiftCanvas >> declaration: aDeclaration [
+	^ self
+		brush:
+			(MASwiftDeclarationBrush new
+				declaration: aDeclaration;
+				yourself)
 ]
 
 { #category : #public }
@@ -52,22 +41,8 @@ MASwiftCanvas >> declaration: aDeclaration with: aBlock [
 ]
 
 { #category : #public }
-MASwiftCanvas >> enum: aStructName inherits: aCollectionOfStrings with: aBlock [
-	^ (self
-		brush:
-			(MASwiftEnumBrush new
-				name: aStructName;
-				inherits: aCollectionOfStrings;
-				yourself)) with: aBlock
-]
-
-{ #category : #public }
-MASwiftCanvas >> function: aFunctionDeclaration with: aBlock [
-	^ (self
-		brush:
-			(MASwiftFunctionDeclarationBrush new
-				functionDeclaration: aFunctionDeclaration;
-				yourself)) with: aBlock
+MASwiftCanvas >> expression: anAssignmentExpression [
+	self document writeIndent; expression: anAssignmentExpression.
 ]
 
 { #category : #public }
@@ -80,35 +55,15 @@ MASwiftCanvas >> import: aString [
 ]
 
 { #category : #public }
-MASwiftCanvas >> literal: aString [
-	self document literal: aString
+MASwiftCanvas >> literal: anObject [
+	self document literal: anObject
 ]
 
 { #category : #private }
 MASwiftCanvas >> nest: aBlock [
 	self document indent; cr.
 	super nest: aBlock.
-	self document outdent.
-]
-
-{ #category : #public }
-MASwiftCanvas >> openClass: aClassName inherits: aCollectionOfStrings [
-	^ self
-		brush:
-			(MASwiftClassBrush new
-				name: aClassName;
-				inherits: aCollectionOfStrings;
-				yourself)
-]
-
-{ #category : #public }
-MASwiftCanvas >> openStruct: aStructName inherits: aCollectionOfStrings [
-	^ self
-		brush:
-			(MASwiftStructBrush new
-				name: aStructName;
-				inherits: aCollectionOfStrings;
-				yourself)
+	self document outdent; cr.
 ]
 
 { #category : #public }
@@ -120,25 +75,4 @@ MASwiftCanvas >> render: anObject [
 { #category : #public }
 MASwiftCanvas >> string: aString [
 	self document string: aString
-]
-
-{ #category : #public }
-MASwiftCanvas >> struct: aStructName inherits: aCollectionOfStrings with: aBlock [
-	^ (self
-		brush:
-			(MASwiftStructBrush new
-				name: aStructName;
-				inherits: aCollectionOfStrings;
-				yourself)) with: aBlock
-]
-
-{ #category : #public }
-MASwiftCanvas >> varNamed: aVarName ofType: aTypeString isOptional: isOptional [
-	^ self
-		brush:
-			(MASwiftVarBrush new
-				name: aVarName;
-				type: aTypeString;
-				isOptional: isOptional;
-				yourself)
 ]

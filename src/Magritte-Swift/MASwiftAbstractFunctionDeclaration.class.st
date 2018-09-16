@@ -40,6 +40,11 @@ MASwiftAbstractFunctionDeclaration >> genericParameters: anObject [
 	genericParameters := anObject
 ]
 
+{ #category : #testing }
+MASwiftAbstractFunctionDeclaration >> hasSubexpressions [
+	^ body isEmptyOrNil not
+]
+
 { #category : #printing }
 MASwiftAbstractFunctionDeclaration >> printDeclarationModifiersOn: aStream [
 	declarationModifiers isEmptyOrNil

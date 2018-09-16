@@ -17,6 +17,12 @@ MASwiftAbstractDeclaration >> attributes: anObject [
 	attributes := anObject
 ]
 
+{ #category : #testing }
+MASwiftAbstractDeclaration >> hasSubexpressions [
+	"Some declarations could have a body - e.g. classes, structs, enums, functions."
+	^ false
+]
+
 { #category : #printing }
 MASwiftAbstractDeclaration >> printAttributesOn: aStream [
 	attributes ifNil: [ ^ false ].

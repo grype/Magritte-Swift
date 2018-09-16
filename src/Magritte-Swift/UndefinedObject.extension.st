@@ -7,5 +7,5 @@ UndefinedObject >> printSwiftOn: aStream [
 
 { #category : #'*Magritte-Swift' }
 UndefinedObject >> swiftOn: aRenderer [
-	aRenderer null
+	aRenderer literal: #nil
 ]
