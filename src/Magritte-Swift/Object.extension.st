@@ -1,6 +1,16 @@
 Extension { #name : #Object }
 
 { #category : #'*Magritte-Swift' }
+Object >> asSwiftExpression [
+	
+]
+
+{ #category : #'*Magritte-Swift' }
+Object >> isSwiftExpression [
+	^ false
+]
+
+{ #category : #'*Magritte-Swift' }
 Object >> printSwiftOn: aStream [
 	aStream nextPutAll: self greaseString
 ]

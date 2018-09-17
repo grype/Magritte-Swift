@@ -1,6 +1,6 @@
 Class {
 	#name : #MASwiftAssignmentExpression,
-	#superclass : #MASwiftExpression,
+	#superclass : #MASwiftAbstractExpression,
 	#instVars : [
 		'expression',
 		'receiver'

@@ -7,12 +7,33 @@ Class {
 { #category : #tests }
 MASwiftVariableDeclarationTest >> testPrintSwiftOn [
 	| declaration |
-	declaration := MASwiftVariableDeclaration new name: #foo; type: #String; yourself.
+
+	declaration := MASwiftVariableDeclaration new
+		name: #foo;
+		type: #String;
+		yourself.
 	self assertDeclaration: declaration prints: 'var foo: String'.
-	
-	declaration type: (MASwiftType new name: #String; isOptional: true; yourself).
+
+	declaration
+		type:
+			(MASwiftType new
+				name: #String;
+				isOptional: true;
+				yourself).
 	self assertDeclaration: declaration prints: 'var foo: String?'.
-	
+
 	declaration initializingExpression: 'URL(string: "")'.
-	self assertDeclaration: declaration prints: 'var foo: String? = URL(string: "")'.
+	declaration
+		initializingExpression:
+			(MASwiftInitializingExpression new
+				type: #URL;
+				arguments:
+					(OrderedCollection
+						with:
+							(MASwiftFunctionCallArgument new
+								name: #string;
+								expression: '';
+								yourself));
+				yourself).
+	self assertDeclaration: declaration prints: 'var foo: String? = URL(string: "")'
 ]
