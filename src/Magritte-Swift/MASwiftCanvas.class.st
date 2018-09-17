@@ -12,6 +12,11 @@ MASwiftCanvas class >> builder [
 ]
 
 { #category : #public }
+MASwiftCanvas >> array: anArray [
+	self document array: anArray
+]
+
+{ #category : #public }
 MASwiftCanvas >> contents [
 	^ self document stream contents
 ]
@@ -20,6 +25,11 @@ MASwiftCanvas >> contents [
 MASwiftCanvas >> cr [
 	self flush.
 	self document cr
+]
+
+{ #category : #public }
+MASwiftCanvas >> dateAndTime: aDateAndTime [
+	self document dateAndTime: aDateAndTime
 ]
 
 { #category : #public }
@@ -38,6 +48,11 @@ MASwiftCanvas >> declaration: aDeclaration with: aBlock [
 			(MASwiftDeclarationBrush new
 				declaration: aDeclaration;
 				yourself)) with: aBlock
+]
+
+{ #category : #public }
+MASwiftCanvas >> dictionary: aDictionary [
+	self document dictionary: aDictionary
 ]
 
 { #category : #public }
@@ -64,6 +79,11 @@ MASwiftCanvas >> nest: aBlock [
 	self document indent; cr.
 	super nest: aBlock.
 	self document outdent; cr.
+]
+
+{ #category : #public }
+MASwiftCanvas >> number: aNumber [
+	self document number: aNumber
 ]
 
 { #category : #public }

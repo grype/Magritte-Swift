@@ -8,6 +8,15 @@ Class {
 }
 
 { #category : #writing }
+MASwiftDocument >> array: anArray [
+	stream nextPut: $[.
+	anArray
+		do: [ :each | each key printSwiftOn: stream ]
+		separatedBy: [ stream nextPutAll: ', ' ].
+	stream nextPut: $]
+]
+
+{ #category : #writing }
 MASwiftDocument >> closeDeclaration [
 	stream nextPut: $}
 ]
@@ -25,8 +34,18 @@ MASwiftDocument >> cr [
 ]
 
 { #category : #writing }
+MASwiftDocument >> dateAndTime: aDateAndTime [
+	aDateAndTime printSwiftOn: stream
+]
+
+{ #category : #writing }
 MASwiftDocument >> declaration: aDeclaration [
 	aDeclaration printSwiftOn: stream
+]
+
+{ #category : #writing }
+MASwiftDocument >> dictionary: aDictionary [
+	aDictionary printSwiftOn: stream
 ]
 
 { #category : #writing }
@@ -68,6 +87,11 @@ MASwiftDocument >> multilineComment: aString [
 ]
 
 { #category : #writing }
+MASwiftDocument >> number: aNumber [
+	aNumber printSwiftOn: stream
+]
+
+{ #category : #writing }
 MASwiftDocument >> openDeclaration: aClassDeclaration [
 	aClassDeclaration printSwiftOn: stream.
 	stream nextPutAll: ' {'
@@ -93,7 +117,12 @@ MASwiftDocument >> singlelineComment: aString [
 
 { #category : #writing }
 MASwiftDocument >> string: aString [
-	stream nextPut: $"; nextPutAll: (aString copyReplaceAll: '"' with: '\"'); nextPut: $"
+	aString printSwiftOn: stream
+]
+
+{ #category : #writing }
+MASwiftDocument >> url: anUrl [
+	anUrl printSwiftOn: stream
 ]
 
 { #category : #'writing-formatting' }
