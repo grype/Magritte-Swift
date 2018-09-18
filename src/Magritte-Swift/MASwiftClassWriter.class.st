@@ -70,15 +70,20 @@ MASwiftClassWriter >> visitStringDescription: aDescription [
 
 { #category : #'visiting-description' }
 MASwiftClassWriter >> visitSwiftClassContainer: aDescription [
-	| requiredDescriptions classDeclaration codableDescriptions |
+	| requiredDescriptions classDeclaration codableDescriptions stringConvertibleDescriptions returnDescriptionExpression stringConvertibleDescription variableInfos |
 
 	classDeclaration := MASwiftClassDeclaration new
 		name: aDescription swiftName;
 		inheritanceTypes: (aDescription inheritsFrom ifNotNil: [ :val | val asOrderedCollection ]);
 		yourself.
-		
+
 	codableDescriptions := aDescription swiftCodableChildren sort: [ :a :b | a priority < b priority ].
-	codableDescriptions isEmptyOrNil ifFalse: [ classDeclaration inheritanceTypes add: #Decodable ].
+	codableDescriptions isEmptyOrNil
+		ifFalse: [ classDeclaration inheritanceTypes add: #Decodable ].
+
+	stringConvertibleDescriptions := aDescription swiftStringConvertibleChildren.
+	stringConvertibleDescriptions isEmptyOrNil
+		ifFalse: [ classDeclaration inheritanceTypes add: #CustomStringConvertible ].
 
 	stream
 		declaration: classDeclaration
@@ -86,19 +91,48 @@ MASwiftClassWriter >> visitSwiftClassContainer: aDescription [
 				do: [ :each | each writeSwiftDeclarationOf: self object on: stream ]
 				separatedBy: [ stream cr ].
 
-			stream cr; cr.
+			requiredDescriptions := aDescription swiftSerializableRequiredChildren
+				sort: [ :a :b | a priority < b priority ].
+			requiredDescriptions isEmptyOrNil
+				ifFalse: [ stream
+						cr;
+						cr.
+					self visit: (MASwiftClassInitContainer withAll: requiredDescriptions) ].
 
-			requiredDescriptions := aDescription swiftSerializableRequiredChildren sort: [ :a :b | a priority < b priority ].
-			self visit: (MASwiftClassInitContainer withAll: requiredDescriptions).
-			
-			stream cr; cr.
 
-			self
-				visit:
-					((MASwiftEnumContainer withAll: codableDescriptions)
-						swiftName: #Codable;
-						inheritsFrom: #(#String #CodingKey);
-						yourself) ]
+			codableDescriptions isEmptyOrNil
+				ifFalse: [ stream
+						cr;
+						cr.
+					self
+						visit:
+							((MASwiftEnumContainer withAll: codableDescriptions)
+								swiftName: #Codable;
+								inheritsFrom: #(#String #CodingKey);
+								yourself) ].
+
+			(stringConvertibleDescriptions isEmptyOrNil not or: [ aDescription isSwiftStringConvertible ])
+				ifTrue: [ stream
+						cr;
+						cr.
+
+					stringConvertibleDescription := MASwiftVariableDeclaration new
+						name: #description;
+						type: #String;
+						yourself.
+
+					stream
+						declaration: stringConvertibleDescription
+						with: [ variableInfos := stringConvertibleDescriptions
+								collect: [ :each | '{1}: \\(String(describing: {1})' format: {each swiftName} ].
+							returnDescriptionExpression := MASwiftReturnExpression new
+								expression:
+									('{1}({2})'
+										format:
+											{aDescription swiftName.
+											(variableInfos joinUsing: '; ')});
+								yourself.
+							stream declaration: returnDescriptionExpression ] ] ]
 ]
 
 { #category : #'visiting-description' }

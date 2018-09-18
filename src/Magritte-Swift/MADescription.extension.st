@@ -38,6 +38,16 @@ MADescription >> defaultSwiftSerialized [
 ]
 
 { #category : #'*Magritte-Swift' }
+MADescription >> defaultSwiftStringConvertible [
+	^self class defaultSwiftStringConvertible
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription class >> defaultSwiftStringConvertible [
+	^ false
+]
+
+{ #category : #'*Magritte-Swift' }
 MADescription class >> defaultSwiftWriter [
 	^ MASwiftClassWriter
 ]
@@ -65,6 +75,19 @@ MADescription >> isSwiftSerialized [
 MADescription >> isSwiftSerialized: aBoolean [
 
 	^ self propertyAt: #swiftSerialized put: aBoolean
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription >> isSwiftStringConvertible [
+	"Answer whether the described object should be serialized to JSON."
+
+	^ self propertyAt: #swiftStringConvertible ifAbsent: [ self defaultSwiftStringConvertible ]
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription >> isSwiftStringConvertible: aBoolean [
+
+	^ self propertyAt: #swiftStringConvertible put: aBoolean
 ]
 
 { #category : #'*Magritte-Swift' }

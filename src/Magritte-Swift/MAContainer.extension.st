@@ -14,3 +14,8 @@ MAContainer >> swiftSerializableChildren [
 MAContainer >> swiftSerializableRequiredChildren [
 	^ self children select: [ :each | each isSwiftSerialized and: [ each isRequired ] ]
 ]
+
+{ #category : #'*Magritte-Swift' }
+MAContainer >> swiftStringConvertibleChildren [
+	^ self children select: #isSwiftStringConvertible
+]
