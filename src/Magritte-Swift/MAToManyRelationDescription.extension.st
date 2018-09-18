@@ -4,7 +4,7 @@ Extension { #name : #MAToManyRelationDescription }
 MAToManyRelationDescription >> asSwiftVariableDeclaration [
 	| swiftType swiftClassNames |
 
-	swiftClassNames := self classes collect: [ :each | each swiftClassDescription swiftName ].
+	swiftClassNames := self classes collect: [ :each | each swiftClassContainer swiftName ].
 	swiftType := swiftClassNames size > 1
 		ifTrue: [ MASwiftDictionaryType new
 				keyType: swiftClassNames first asSymbol;

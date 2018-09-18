@@ -9,7 +9,7 @@ GRObject class >> asSwift [
 ]
 
 { #category : #'*Magritte-Swift' }
-GRObject class >> swiftClassDescription [
+GRObject class >> swiftClassContainer [
 	^ (MASwiftClassContainer withAll: self magritteDescription children)
 		swiftName: self name asSymbol;
 		yourself.
@@ -29,7 +29,7 @@ GRObject >> swiftOn: aRenderer [
 GRObject class >> swiftOn: aRenderer [
 	| description |
 
-	description := self swiftClassDescription.
+	description := self swiftClassContainer.
 	description ifNil: [ ^ self ].
 	description swiftWriter write: self description: description to: aRenderer
 ]

@@ -6,7 +6,7 @@ MAToOneRelationDescription >> asSwiftVariableDeclaration [
 		name: self swiftName asSymbol;
 		type:
 			(MASwiftType new
-				name: self classes first swiftClassDescription swiftName asSymbol;
+				name: self classes first swiftClassContainer swiftName asSymbol;
 				isOptional: self isRequired not;
 				yourself);
 		yourself
