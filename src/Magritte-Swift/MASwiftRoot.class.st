@@ -22,7 +22,7 @@ MASwiftRoot >> imports [
 MASwiftRoot >> initialize [
 	super initialize.
 	imports := OrderedCollection with: (MASwiftImportDeclaration named: #Foundation).
-	preambleComment := 'This file was generated'
+	preambleComment := 'This file was generated with Magritte-Swift'
 ]
 
 { #category : #writing }
