@@ -94,8 +94,11 @@ MASwiftClassWriter >> visitSwiftClassContainer: aDescription [
 		with: [ (aDescription swiftSerializableChildren sort: [ :a :b | a priority < b priority ])
 				do: [ :each | each writeSwiftDeclarationOf: self object on: stream ]
 				separatedBy: [ stream cr ].
-			
-			stream cr; cr.
+
+			aDescription swiftSerializableChildren
+				ifNotEmpty: [ stream
+						cr;
+						cr ].
 
 			aDescription childContainers
 				do: [ :aChildContainer | self visit: aChildContainer ]
