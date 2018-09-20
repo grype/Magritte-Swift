@@ -6,6 +6,21 @@ MADescription >> asSwiftVariableDeclaration [
 ]
 
 { #category : #'*Magritte-Swift' }
+MADescription >> beSwiftCodable [
+	self isSwiftCodable: true
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription >> beSwiftSerialized [
+	self isSwiftSerialized: true
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription >> beSwiftStringConvertible [
+	self isSwiftStringConvertible: true
+]
+
+{ #category : #'*Magritte-Swift' }
 MADescription class >> defaultSwiftCodable [
 	^ false
 ]
