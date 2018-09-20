@@ -9,10 +9,25 @@ GRObject class >> asSwift [
 ]
 
 { #category : #'*Magritte-Swift' }
+GRObject class >> isSwiftSerializable [
+	^ false
+]
+
+{ #category : #'*Magritte-Swift' }
 GRObject class >> swiftClassContainer [
 	^ (MASwiftClassContainer withAll: self magritteDescription children)
 		swiftName: self name asSymbol;
-		yourself.
+		isSwiftSerialized: self isSwiftSerializable;
+		yourself
+]
+
+{ #category : #'*Magritte-Swift' }
+GRObject class >> swiftOn: aRenderer [
+	| description |
+
+	description := self swiftClassContainer.
+	description ifNil: [ ^ self ].
+	description swiftWriter write: self description: description to: aRenderer
 ]
 
 { #category : #'*Magritte-Swift' }
@@ -23,13 +38,4 @@ GRObject >> swiftOn: aRenderer [
 		write: self
 		description: description
 		to: aRenderer
-]
-
-{ #category : #'*Magritte-Swift' }
-GRObject class >> swiftOn: aRenderer [
-	| description |
-
-	description := self swiftClassContainer.
-	description ifNil: [ ^ self ].
-	description swiftWriter write: self description: description to: aRenderer
 ]
