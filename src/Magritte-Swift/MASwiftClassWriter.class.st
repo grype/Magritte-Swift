@@ -24,7 +24,7 @@ MASwiftClassWriter >> functionParamaterFromDescription: aDescription [
 	^ MASwiftFunctionParameter new
 		name: aDescription swiftName;
 		localName: (self canonicalArgumentNameFrom: aDescription swiftName);
-		type: (MASwiftType new name: aDescription class swiftType; yourself);
+		type: (MASwiftType new name: aDescription swiftType; yourself);
 		yourself
 ]
 

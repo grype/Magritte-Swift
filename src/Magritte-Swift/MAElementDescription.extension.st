@@ -2,7 +2,7 @@ Extension { #name : #MAElementDescription }
 
 { #category : #'*Magritte-Swift' }
 MAElementDescription >> asSwiftVariableDeclaration [
-	^ self class swiftType
+	^ self swiftType
 		ifNotNil: [ :swiftType | 
 			MASwiftVariableDeclaration new
 				name: self swiftName asSymbol;
@@ -17,4 +17,9 @@ MAElementDescription >> asSwiftVariableDeclaration [
 { #category : #'*Magritte-Swift' }
 MAElementDescription class >> swiftType [
 	^ 'Any'
+]
+
+{ #category : #'*Magritte-Swift' }
+MAElementDescription >> swiftType [
+	^ self class swiftType
 ]
