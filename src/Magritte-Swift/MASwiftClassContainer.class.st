@@ -18,7 +18,7 @@ MASwiftClassContainer >> childCodableContainer [
 		ifTrue: [ ^ nil ].
 		
 	^ (MASwiftEnumContainer withAll: codableDescriptions)
-				swiftName: #Codable;
+				swiftName: #CodingKeys;
 				inheritsFrom: #(#String #CodingKey);
 				yourself
 ]

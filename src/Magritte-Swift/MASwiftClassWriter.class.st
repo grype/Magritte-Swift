@@ -84,7 +84,7 @@ MASwiftClassWriter >> visitSwiftClassContainer: aDescription [
 		yourself.
 
 	aDescription hasCodableChildren
-		ifTrue: [ classDeclaration inheritanceTypes add: #Decodable ].
+		ifTrue: [ classDeclaration inheritanceTypes add: #Codable ].
 
 	aDescription hasStringConvertibleChildren
 		ifTrue: [ classDeclaration inheritanceTypes add: #CustomStringConvertible ].
@@ -93,18 +93,18 @@ MASwiftClassWriter >> visitSwiftClassContainer: aDescription [
 		declaration: classDeclaration
 		with: [ (aDescription swiftSerializableChildren sort: [ :a :b | a priority < b priority ])
 				do: [ :each | each writeSwiftDeclarationOf: self object on: stream ]
-				separatedBy: [ stream cr ].
+				separatedBy: [ stream lf ].
 
 			aDescription swiftSerializableChildren
 				ifNotEmpty: [ stream
-						cr;
-						cr ].
+						lf;
+						lf ].
 
 			aDescription childContainers
 				do: [ :aChildContainer | self visit: aChildContainer ]
 				separatedBy: [ stream
-						cr;
-						cr ] ]
+						lf;
+						lf ] ]
 ]
 
 { #category : #'visiting-description' }
@@ -124,7 +124,7 @@ MASwiftClassWriter >> visitSwiftClassInitContainer: aContainer [
 							(MASwiftAssignmentExpression new
 								receiver: each swiftName;
 								expression: (self canonicalArgumentNameFrom: each swiftName)) ]
-				separatedBy: [ stream cr ] ]
+				separatedBy: [ stream lf ] ]
 ]
 
 { #category : #'visiting-description' }
@@ -135,7 +135,7 @@ MASwiftClassWriter >> visitSwiftDeclarationContainer: aDescription [
 				declaration: aDescription declaration
 				with: [ aDescription childDeclarations
 						do: [ :aChildDeclaration | stream declaration: aChildDeclaration ]
-						separatedBy: [ stream cr ] ] ]
+						separatedBy: [ stream lf ] ] ]
 ]
 
 { #category : #'visiting-description' }
@@ -150,7 +150,7 @@ MASwiftClassWriter >> visitSwiftEnumContainer: aDescription [
 		declaration: enum
 		with: [ aDescription swiftCodableChildren
 				do: [ :each | stream declaration: (MASwiftCaseDeclaration named: each swiftName) ]
-				separatedBy: [ stream cr ] ]
+				separatedBy: [ stream lf ] ]
 ]
 
 { #category : #'visiting-description' }

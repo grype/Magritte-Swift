@@ -22,12 +22,6 @@ MASwiftCanvas >> contents [
 ]
 
 { #category : #public }
-MASwiftCanvas >> cr [
-	self flush.
-	self document cr
-]
-
-{ #category : #public }
 MASwiftCanvas >> dateAndTime: aDateAndTime [
 	self document dateAndTime: aDateAndTime
 ]
@@ -70,15 +64,21 @@ MASwiftCanvas >> import: aString [
 ]
 
 { #category : #public }
+MASwiftCanvas >> lf [
+	self flush.
+	self document lf
+]
+
+{ #category : #public }
 MASwiftCanvas >> literal: anObject [
 	self document literal: anObject
 ]
 
 { #category : #private }
 MASwiftCanvas >> nest: aBlock [
-	self document indent; cr.
+	self document indent; lf.
 	super nest: aBlock.
-	self document outdent; cr.
+	self document outdent; lf.
 ]
 
 { #category : #public }

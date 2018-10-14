@@ -9,7 +9,7 @@ Class {
 
 { #category : #private }
 MASwiftImportBrush >> closeBrush [
-	self document cr
+	self document lf
 ]
 
 { #category : #accessing }

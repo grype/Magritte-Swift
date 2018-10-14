@@ -49,11 +49,11 @@ MASwiftRoot >> writeImportsOn: aDocument [
 MASwiftRoot >> writePreambleOn: aDocument [
 	preambleComment ifNotNil: [ :aComment | aDocument comment: aComment ].
 	aDocument
-		cr;
-		cr.
+		lf;
+		lf.
 	imports
 		ifNotEmpty: [ self writeImportsOn: aDocument.
 			aDocument
-				cr;
-				cr ]
+				lf;
+				lf ]
 ]

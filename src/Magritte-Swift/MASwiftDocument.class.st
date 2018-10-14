@@ -28,11 +28,6 @@ MASwiftDocument >> comment: aString [
 		ifFalse: [ self singlelineComment: aString ]
 ]
 
-{ #category : #'writing-formatting' }
-MASwiftDocument >> cr [
-	stream nextPut: Character cr
-]
-
 { #category : #writing }
 MASwiftDocument >> dateAndTime: aDateAndTime [
 	aDateAndTime printSwiftOn: stream
@@ -64,6 +59,11 @@ MASwiftDocument >> initialize [
 	indentationLevel := 0
 ]
 
+{ #category : #'writing-formatting' }
+MASwiftDocument >> lf [
+	stream nextPut: Character lf
+]
+
 { #category : #writing }
 MASwiftDocument >> literal: anObject [
 	stream nextPutAll: anObject greaseString
@@ -76,13 +76,13 @@ MASwiftDocument >> multilineComment: aString [
 	pfx := ' * '.
 	stream
 		nextPutAll: '/**';
-		nextPut: Character cr;
+		nextPut: Character lf;
 		nextPutAll: pfx;
 		nextPutAll:
-			((aString copyReplaceAll: Character cr greaseString with: Character cr greaseString , pfx)
+			((aString copyReplaceAll: Character lf greaseString with: Character lf greaseString , pfx)
 				copyReplaceAll: Character lf greaseString
-				with: Character cr greaseString , pfx);
-		nextPut: Character cr;
+				with: Character lf greaseString , pfx);
+		nextPut: Character lf;
 		nextPutAll: ' */'
 ]
 
@@ -110,9 +110,9 @@ MASwiftDocument >> singlelineComment: aString [
 	stream
 		nextPutAll: sep;
 		nextPutAll:
-			((aString copyReplaceAll: Character cr greaseString with: Character cr greaseString, sep)
+			((aString copyReplaceAll: Character lf greaseString with: Character lf greaseString, sep)
 				copyReplaceAll: Character lf greaseString
-				with: Character cr greaseString , sep)
+				with: Character lf greaseString , sep)
 ]
 
 { #category : #writing }

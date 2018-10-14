@@ -101,12 +101,6 @@ MASwiftDocumentTest >> testComment [
 ]
 
 { #category : #tests }
-MASwiftDocumentTest >> testCr [
-	document cr.
-	self assert: document stream contents equals: Character cr greaseString
-]
-
-{ #category : #tests }
 MASwiftDocumentTest >> testExpression [
 	document
 		expression:
@@ -121,6 +115,12 @@ MASwiftDocumentTest >> testExpression [
 MASwiftDocumentTest >> testImport [
 	document declaration: (MASwiftImportDeclaration named: #Foundation).
 	self assert: document stream contents equals: 'import Foundation'
+]
+
+{ #category : #tests }
+MASwiftDocumentTest >> testLf [
+	document lf.
+	self assert: document stream contents equals: Character lf greaseString
 ]
 
 { #category : #tests }
