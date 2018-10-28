@@ -2,7 +2,8 @@ Class {
 	#name : #ClyExportSwiftCommand,
 	#superclass : #CmdCommand,
 	#instVars : [
-		'targetClasses'
+		'targetClasses',
+		'overwriteAll'
 	],
 	#category : #'Magritte-Swift-Commands'
 }
@@ -32,6 +33,13 @@ ClyExportSwiftCommand class >> isClassSerializable: aClass [
 	^ (aClass respondsTo: #isSwiftSerializable) and: [ aClass isSwiftSerializable ]
 ]
 
+{ #category : #execution }
+ClyExportSwiftCommand >> confirmOverwriteFile: aFileReference [
+	^ UIManager default
+		confirm: ('Overwrite file at: "{1}" ?' format: {aFileReference fullName})
+		label: 'File exists'
+]
+
 { #category : #accessing }
 ClyExportSwiftCommand >> defaultMenuItemName [
 	^ 'Export as Swift'
@@ -52,10 +60,14 @@ ClyExportSwiftCommand >> execute [
 
 	dir ifNil: [ ^ self ].
 	dir := dir asFileReference.
+	overwriteAll := nil.
 
 	targetClasses
 		do: [ :aCls | 
-			fileReference := (dir / aCls swiftClassContainer swiftName greaseString , 'swift') nextVersion.
+			fileReference := dir / aCls swiftClassContainer swiftName greaseString , 'swift'.
+			fileReference := self
+				validateFileReference: fileReference
+				applyToAll: (targetClasses size > 1 and: [ aCls == targetClasses first ]).
 			fileReference binaryWriteStream
 				nextPutAll: aCls asSwift;
 				close ]
@@ -67,4 +79,27 @@ ClyExportSwiftCommand >> prepareFullExecutionInContext: aBrowserContext [
 	
 	targetClasses := aBrowserContext selectedClasses
 		select: [ :each | self class isClassSerializable: each ]
+]
+
+{ #category : #execution }
+ClyExportSwiftCommand >> validateFileReference: aFileReference applyToAll: applyToAll [
+	| response |
+
+	aFileReference exists
+		ifFalse: [ ^ aFileReference ].
+
+	overwriteAll
+		ifNotNil: [ :val | 
+			val
+				ifTrue: [ ^ aFileReference ]
+				ifFalse: [ ^ aFileReference nextVersion ] ].
+
+	response := self confirmOverwriteFile: aFileReference.
+	applyToAll
+		ifTrue: [ (UIManager default confirm: 'Apply to all')
+				ifTrue: [ overwriteAll := response ] ].
+			
+	^ response
+		ifTrue: [ aFileReference ]
+		ifFalse: [ aFileReference nextVersion ]
 ]
