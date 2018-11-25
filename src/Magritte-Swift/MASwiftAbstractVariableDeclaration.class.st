@@ -46,8 +46,19 @@ MASwiftAbstractVariableDeclaration >> printDeclarationKeywordOn: aStream [
 ]
 
 { #category : #writing }
+MASwiftAbstractVariableDeclaration >> printDeclarationModifiersOn: aStream [
+	declarationModifiers isEmptyOrNil
+		ifTrue: [ ^ false ].
+
+	declarationModifiers do: [ :aString | aStream nextPutAll: aString ] separatedBy: [ aStream nextPut: Character space ].
+	^ true
+]
+
+{ #category : #writing }
 MASwiftAbstractVariableDeclaration >> printSwiftOn: aStream [
 	(self printAttributesOn: aStream)
+		ifTrue: [ aStream nextPut: Character space ].
+	(self printDeclarationModifiersOn: aStream)
 		ifTrue: [ aStream nextPut: Character space ].
 	self printDeclarationKeywordOn: aStream.
 	aStream nextPut: Character space.
