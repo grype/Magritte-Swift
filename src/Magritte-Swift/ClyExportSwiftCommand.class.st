@@ -69,6 +69,7 @@ ClyExportSwiftCommand >> execute [
 				validateFileReference: fileReference
 				applyToAll: (targetClasses size > 1 and: [ aCls == targetClasses first ]).
 			fileReference binaryWriteStream
+				truncate;
 				nextPutAll: aCls asSwift;
 				close ]
 ]
