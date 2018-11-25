@@ -42,7 +42,7 @@ MASwiftRoot >> preambleComment: anObject [
 
 { #category : #writing }
 MASwiftRoot >> writeImportsOn: aDocument [
-	imports do: [ :anImport | aDocument declaration: anImport ]
+	imports do: [ :anImport | aDocument declaration: anImport ] separatedBy: [ aDocument lf ]
 ]
 
 { #category : #writing }
