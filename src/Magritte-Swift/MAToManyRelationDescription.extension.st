@@ -15,8 +15,10 @@ MAToManyRelationDescription >> asSwiftVariableDeclaration [
 				yourself ].
 	swiftType isOptional: self isRequired not.
 
-	^ MASwiftVariableDeclaration new
+	^ self swiftVariableDeclarationClass new
 		name: self swiftName asSymbol;
+		declarationModifiers: self swiftDeclarationModifiers;
+		initializingExpression: self swiftDefaultValue;
 		type: swiftType;
 		yourself
 ]

@@ -21,6 +21,11 @@ MASwiftType class >> implicitlyUnwrappedOptionalNamed: aString [
 		yourself
 ]
 
+{ #category : #initialization }
+MASwiftType class >> initialize [
+	Smalltalk at: #SwiftInferredType put: nil
+]
+
 { #category : #'instance creation' }
 MASwiftType class >> named: aString [
 	^ self new

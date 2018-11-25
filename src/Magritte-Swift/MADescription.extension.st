@@ -11,6 +11,11 @@ MADescription >> beSwiftCodable [
 ]
 
 { #category : #'*Magritte-Swift' }
+MADescription >> beSwiftConstant [
+	self isSwiftConstant: true
+]
+
+{ #category : #'*Magritte-Swift' }
 MADescription >> beSwiftSerialized [
 	self isSwiftSerialized: true
 ]
@@ -33,6 +38,16 @@ MADescription >> defaultSwiftCodable [
 { #category : #'*Magritte-Swift' }
 MADescription >> defaultSwiftCodingKey [
 	^ self defaultSwiftName 
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription class >> defaultSwiftConstant [
+	^ false
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription >> defaultSwiftConstant [
+	^ self class defaultSwiftConstant 
 ]
 
 { #category : #'*Magritte-Swift' }
@@ -80,6 +95,16 @@ MADescription >> isSwiftCodable: aBoolean [
 ]
 
 { #category : #'*Magritte-Swift' }
+MADescription >> isSwiftConstant [
+	^ self propertyAt: #isSwiftConstant ifAbsent: [ self defaultSwiftConstant ]
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription >> isSwiftConstant: aBoolean [
+	self propertyAt: #isSwiftConstant put: aBoolean
+]
+
+{ #category : #'*Magritte-Swift' }
 MADescription >> isSwiftSerialized [
 	"Answer whether the described object should be serialized to JSON."
 
@@ -118,6 +143,26 @@ MADescription >> swiftCodingKey: aString [
 ]
 
 { #category : #'*Magritte-Swift' }
+MADescription >> swiftDeclarationModifiers [
+	^ self propertyAt: #swiftDeclarationModifiers ifAbsent: [ nil ]
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription >> swiftDeclarationModifiers: aCollection [
+	self propertyAt: #swiftDeclarationModifiers put: aCollection
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription >> swiftDefaultValue [
+	^ self propertyAt: #swiftInitializingExpression ifAbsent: [ nil ]
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription >> swiftDefaultValue: aSwiftExpression [
+	self propertyAt: #swiftInitializingExpression put: aSwiftExpression
+]
+
+{ #category : #'*Magritte-Swift' }
 MADescription >> swiftName [
 	"Answer the JSON element name."
 
@@ -127,6 +172,13 @@ MADescription >> swiftName [
 { #category : #'*Magritte-Swift' }
 MADescription >> swiftName: aString [
 	self propertyAt: #swiftName put: aString
+]
+
+{ #category : #'*Magritte-Swift' }
+MADescription >> swiftVariableDeclarationClass [
+	^ self isSwiftConstant
+		ifTrue: [ MASwiftConstantDeclaration ]
+		ifFalse: [ MASwiftVariableDeclaration ]
 ]
 
 { #category : #'*Magritte-Swift' }

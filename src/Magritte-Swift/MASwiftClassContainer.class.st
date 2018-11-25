@@ -50,7 +50,7 @@ MASwiftClassContainer >> childStringConvertibleContainer [
 	(stringConvertibleDescriptions isEmptyOrNil and: [ self isSwiftStringConvertible not ])
 		ifTrue: [ ^ nil ].
 
-	declaration := MASwiftVariableDeclaration new
+	declaration := self swiftVariableDeclarationClass new
 		name: #description;
 		type: #String;
 		yourself.

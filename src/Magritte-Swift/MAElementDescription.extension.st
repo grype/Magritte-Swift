@@ -2,16 +2,32 @@ Extension { #name : #MAElementDescription }
 
 { #category : #'*Magritte-Swift' }
 MAElementDescription >> asSwiftVariableDeclaration [
-	^ self swiftType
-		ifNotNil: [ :swiftType | 
-			MASwiftVariableDeclaration new
-				name: self swiftName asSymbol;
-				type:
-					(MASwiftType new
-						name: swiftType asSymbol;
+	| swiftType typeDeclaration |
+
+	swiftType := self swiftType
+		ifNil: [ self swiftDefaultValue
+				ifNotNil: [ :val | 
+					(val isKindOf: MASwiftInitializingExpression)
+						ifTrue: [ val type ]
+						ifFalse: [ nil ] ] ].
+
+	swiftType ifNil: [ ^ self ].
+
+	typeDeclaration := self swiftType
+		ifNotNil: [ :aType | 
+			(aType isKindOf: MASwiftType)
+				ifTrue: [ aType ]
+				ifFalse: [ MASwiftType new
+						name: aType asSymbol;
 						isOptional: self isRequired not;
-						yourself);
-				yourself ]
+						yourself ] ].
+
+	^ self swiftVariableDeclarationClass new
+		name: self swiftName asSymbol;
+		declarationModifiers: self swiftDeclarationModifiers;
+		initializingExpression: self swiftDefaultValue;
+		type: typeDeclaration;
+		yourself
 ]
 
 { #category : #'*Magritte-Swift' }
@@ -21,5 +37,10 @@ MAElementDescription class >> swiftType [
 
 { #category : #'*Magritte-Swift' }
 MAElementDescription >> swiftType [
-	^ self class swiftType
+	^ self propertyAt: #swiftType ifAbsent: [ self class swiftType ]
+]
+
+{ #category : #'*Magritte-Swift' }
+MAElementDescription >> swiftType: aSymbol [
+	self propertyAt: #swiftType put: aSymbol
 ]
