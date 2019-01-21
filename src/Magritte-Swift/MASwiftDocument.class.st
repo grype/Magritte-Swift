@@ -80,8 +80,8 @@ MASwiftDocument >> multilineComment: aString [
 		nextPutAll: pfx;
 		nextPutAll:
 			((aString copyReplaceAll: Character lf greaseString with: Character lf greaseString , pfx)
-				copyReplaceAll: Character lf greaseString
-				with: Character lf greaseString , pfx);
+				copyReplaceAll: Character cr greaseString
+				with: Character cr greaseString , pfx);
 		nextPut: Character lf;
 		nextPutAll: ' */'
 ]
@@ -111,8 +111,8 @@ MASwiftDocument >> singlelineComment: aString [
 		nextPutAll: sep;
 		nextPutAll:
 			((aString copyReplaceAll: Character lf greaseString with: Character lf greaseString, sep)
-				copyReplaceAll: Character lf greaseString
-				with: Character lf greaseString , sep)
+				copyReplaceAll: Character cr greaseString
+				with: Character cr greaseString , sep)
 ]
 
 { #category : #writing }
