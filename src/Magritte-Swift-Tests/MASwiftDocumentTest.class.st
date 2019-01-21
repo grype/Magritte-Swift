@@ -92,12 +92,12 @@ MASwiftDocumentTest >> testComment [
 
 	self resetDocument.
 	
-	document comment: (#('One' 'Two' 'Three') joinUsing: Character cr greaseString).
-	self assert: document stream contents equals: '/**
- * One
- * Two
- * Three
- */'
+	document comment: (#('One' 'Two' 'Three') joinUsing: Character lf greaseString).
+	self assert: document stream contents equals: (#('/**'
+ '* One'
+ '* Two'
+ '* Three'
+ '*/') joinUsing: Character lf greaseString, ' ')
 ]
 
 { #category : #tests }
@@ -136,18 +136,18 @@ MASwiftDocumentTest >> testLiteral [
 { #category : #tests }
 MASwiftDocumentTest >> testMultilineComment [
 	document multilineComment: 'I am a multi-line comment'.
-	self assert: document stream contents equals: '/**
- * I am a multi-line comment
- */'.
+	self assert: document stream contents equals: (#('/**'
+ '* I am a multi-line comment'
+ '*/') joinUsing: Character lf greaseString , ' ').
 
 	self resetDocument.
 	
-	document multilineComment: (#('One' 'Two' 'Three') joinUsing: Character cr greaseString).
-	self assert: document stream contents equals: '/**
- * One
- * Two
- * Three
- */'
+	document multilineComment: (#('One' 'Two' 'Three') joinUsing: Character lf greaseString).
+	self assert: document stream contents equals: (#('/**'
+ '* One'
+ '* Two'
+ '* Three'
+ '*/') joinUsing: Character lf greaseString , ' ')
 ]
 
 { #category : #tests }
