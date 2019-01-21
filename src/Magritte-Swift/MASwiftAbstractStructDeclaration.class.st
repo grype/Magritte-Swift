@@ -127,10 +127,11 @@ MASwiftAbstractStructDeclaration >> printSwiftOn: aStream [
 	| last |
 
 	last := false.
-	{[ self printAttributesOn: aStream ].
-	[ self printAccessLevelModifiersOn: aStream ].
-	[ self printStructIdentifierOn: aStream ].
-	[ self printNameOn: aStream ]}
+	(Array
+		with: [ self printAttributesOn: aStream ]
+		with: [ self printAccessLevelModifiersOn: aStream ]
+		with: [ self printStructIdentifierOn: aStream ]
+		with: [ self printNameOn: aStream ])
 		do: [ :each | last := each value ]
 		separatedBy: [ last
 				ifTrue: [ aStream nextPut: Character space ] ].
