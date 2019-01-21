@@ -44,7 +44,7 @@ MASwiftAbstractStructDeclaration >> genericParameters: anObject [
 
 { #category : #testing }
 MASwiftAbstractStructDeclaration >> hasSubexpressions [
-	^ expressions isEmptyOrNil not
+	^ expressions isNotNil
 ]
 
 { #category : #accessing }

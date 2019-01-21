@@ -42,7 +42,7 @@ MASwiftAbstractFunctionDeclaration >> genericParameters: anObject [
 
 { #category : #testing }
 MASwiftAbstractFunctionDeclaration >> hasSubexpressions [
-	^ body isEmptyOrNil not
+	^ body isNotNil
 ]
 
 { #category : #printing }
