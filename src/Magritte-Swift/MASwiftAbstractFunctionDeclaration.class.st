@@ -90,9 +90,7 @@ MASwiftAbstractFunctionDeclaration >> printSwiftOn: aStream [
 				ifTrue: [ aStream nextPut: Character space ] ].
 
 	self printGenericParametersOn: aStream.
-	self printSignatureOn: aStream.
-	self hasSubexpressions
-		ifTrue: [ self printSubexpressionsOn: aStream ]
+	self printSignatureOn: aStream
 ]
 
 { #category : #accessing }
