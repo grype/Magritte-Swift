@@ -224,7 +224,7 @@ GRObject subclass: #MyModel
 2. Make is serializable:
 
 ```smalltalk
-isSwiftSerializable
+MyModel class>>isSwiftSerializable
   ^ true
 ```
 
