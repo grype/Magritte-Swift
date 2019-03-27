@@ -19,7 +19,7 @@ Magritte-Swift depends on Magritte3, which is still tied to Seaside on smalltalk
 As an example, let's start with a simple class that defines a few basic types of properties:
 
 ```smalltalk
-Object subclass: #She
+GRObject subclass: #She
   instanceVariableNames: 'name balance seashore shells'
   classVariableNames: ''
   poolDictionaries: ''
@@ -41,8 +41,8 @@ She class>>nameDescription
   ^ MAStringDescription new
     label: 'Name';
     accessor: #name;
-    beSwiftCodable;
-    swiftName: #name;
+    beSwiftCodable;    "<- makes this property Codable"
+    swiftName: #name;  "<- swift name of the property"
     yourself.
     
 She class>>balanceDescription
@@ -75,13 +75,13 @@ She class>>shells
     yourself.
 ```
 
-After we did that, we can retrieve a string declaration of that class in Swift via #asSwift:
+To retrieve the string declaration of that class in Swift:
 
 ```smalltalk
 She asSwift.
 ```
 
-and this is what we'd get:
+which should produce:
 
 ```swift
 import Foundation
@@ -100,6 +100,8 @@ class She : Codable {
 	}
 }
 ```
+
+### Required attributes
 
 Now let's say that the #name is a required attribute:
 
@@ -139,7 +141,9 @@ class She : Codable {
 
 Notice that the property is no longer optional and an init() method declaration was added...
 
-By default, MagritteSwift will use NSNumber as the numeric type. Let's try change that to a Double, and while at it - make it required, initialized to 0 and a private setter:
+### Numbers
+
+By default, MagritteSwift will use NSNumber as the numeric type. Let's try change that to a Double, making it required and initialized to a value:
 
 ```smalltalk
 balanceDescription
@@ -149,14 +153,14 @@ balanceDescription
     accessor: #balance;
     beSwiftCodable;
     swiftName: #balance;
-    swiftType: #Double;
-    beRequired;
-    swiftDefaultValue: 0;
-    swiftDeclarationModifiers: #(#'private(set)')
+    swiftType: #Double;    "<- Specify name of swift type"
+    beRequired;            "<- Required"
+    swiftDefaultValue: 0;  "<- Initial value"
+    swiftDeclarationModifiers: #(#'private(set)'). "<- declaration modifiers is just a collection of swift source strings"
     yourself
 ```
 
-The resulting swift declaration is:
+The resulting swift declaration should now look like this:
 
 ```swift
 class She : Codable {
@@ -176,4 +180,32 @@ class She : Codable {
 		case balance
 	}
 }
+```
+
+A more fine-grained declaration can be seen here:
+
+```smalltalk
+MyClass class>>myPropertyDescription
+  ^ MANumberDescription new
+    swiftName: #foo;
+    "let foo = ... as opposed to: let foo: SomeType = ..."
+    swiftType: SwiftInferredType;
+    " let foo = ?"
+    swiftDefaultValue:
+      "create initialization expression MyType<Generic>()"
+      (MASwiftInitializingExpression new
+        type: (MASwiftType new
+	  name: #MyType;
+	  genericParameters: #(#Generic);
+	  yourself);
+	yourself);
+    "let as opposed to var"
+    beSwiftConstant;
+    yourself
+```
+
+That should produce:
+
+```swift
+let foo = MyType<Generic>()
 ```
