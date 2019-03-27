@@ -287,7 +287,7 @@ MySwiftRoot>>initialize
 MyModel subclass: #MyFriend
 	instanceVariableNames: 'nickname'
 	classVariableNames: ''
-	package: 'Tweed-Models'
+	package: 'MyPackage'
 	
 MyFriend class>>nicknameDescription
   <magritteDescription>
