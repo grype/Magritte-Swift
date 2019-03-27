@@ -209,3 +209,121 @@ That should produce:
 ```swift
 let foo = MyType<Generic>()
 ```
+
+### How do I make this generate [Realm](https://realm.io) models?
+
+1. Start with a base class for all your models:
+
+```smalltalk
+GRObject subclass: #MyModel
+	instanceVariableNames: ''
+	classVariableNames: ''
+	package: 'MyPackage'
+```
+
+2. Make is serializable:
+
+```smalltalk
+isSwiftSerializable
+  ^ true
+```
+
+3. All of our swift models should be inheriting from `Object`:
+
+```smalltalk
+MyModel class>>swiftClassContainer
+  | container |
+
+  container := self magritteDescription swiftSerializableChildren isEmptyOrNil
+    ifTrue: [ MASwiftClassContainer new
+      swiftName: self name asSymbol;
+      inheritsFrom: #(#Object);
+      yourself ]
+    ifFalse: [ super swiftClassContainer yourself ].
+
+  self ~= MyModel
+    ifTrue: [ container inheritsFrom: (Array with: MyModel name asSymbol) ].
+  ^ container
+```
+
+4. Be sure to make the property codable and include declaration modifiers:
+
+```smalltalk
+MyModel class>>someProperty
+  <magritteDescription>
+  ^ MAElementDescription new
+      "..."
+      beSwiftCodable;
+      swiftDeclarationModifiers: #(#'@objc' #dynamic);
+      yourself.
+```
+
+5. Override #asSwift to return a `MASwiftCanvas` that uses our own document root class which would take care of importing Realm framework:
+
+```smalltalk
+MyModel class>>asSwift
+  ^ MASwiftCanvas builder
+    fullDocument: true;
+    rootClass: MyModelSwiftRoot;
+    render: self
+```
+
+6. Add custom document root:
+
+```smalltalk
+MASwiftRoot subclass: #MyModelSwiftRoot
+  instanceVariableNames: ''
+  classVariableNames: ''
+  package: 'MyPackage'
+  
+MySwiftRoot>>initialize
+  super initialize.
+  imports add: (MASwiftImportDeclaration named: #RealmSwift). "<- this adds 'import RealmSwift' to the list of file imports"
+```
+
+7. Base your smalltalk classes on the base class:
+
+```smalltalk
+MyModel subclass: #MyFriend
+	instanceVariableNames: 'nickname'
+	classVariableNames: ''
+	package: 'Tweed-Models'
+	
+MyFriend class>>nicknameDescription
+  <magritteDescription>
+  ^ MAStringDescription new
+    label: 'Nickname';
+    accessor: #nickname;
+    beSwiftCodable;
+    swiftName: #nickname;
+    swiftDeclarationModifiers: #(#'@objc' #dynamic);
+    yourself
+```
+
+`MyModel asSwift`:
+
+```swift
+import Foundation
+import RealmSwift
+
+class MyModel : Object {
+
+}
+```
+
+`MyFriend asSwift`:
+
+```swift
+import Foundation
+import RealmSwift
+
+class MyFriend : MyModel, Codable {
+  @objc dynamic var nickname: String?
+
+  enum CodingKeys : String, CodingKey {
+    case nickname
+  }
+}
+```
+
+That's it...
