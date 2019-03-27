@@ -246,19 +246,7 @@ MyModel class>>swiftClassContainer
   ^ container
 ```
 
-4. Be sure to make the property codable and include appropriate declaration modifiers:
-
-```smalltalk
-MyModel class>>someProperty
-  <magritteDescription>
-  ^ MAElementDescription new
-      "..."
-      beSwiftCodable;
-      swiftDeclarationModifiers: #(#'@objc' #dynamic);
-      yourself.
-```
-
-5. Override #asSwift to return a `MASwiftCanvas` that uses our own document root class which would take care of importing Realm framework:
+4. Override #asSwift to return a `MASwiftCanvas` that uses our own document root class which would take care of importing Realm framework:
 
 ```smalltalk
 MyModel class>>asSwift
@@ -268,7 +256,7 @@ MyModel class>>asSwift
     render: self
 ```
 
-6. Add custom document root:
+5. Add custom document root:
 
 ```smalltalk
 MASwiftRoot subclass: #MyModelSwiftRoot
@@ -281,7 +269,7 @@ MySwiftRoot>>initialize
   imports add: (MASwiftImportDeclaration named: #RealmSwift). "<- this adds 'import RealmSwift' to the list of file imports"
 ```
 
-7. Base your smalltalk classes on the base class:
+6. Base your smalltalk classes on the base class:
 
 ```smalltalk
 MyModel subclass: #MyFriend
