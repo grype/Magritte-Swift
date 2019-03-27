@@ -228,7 +228,7 @@ MyModel class>>isSwiftSerializable
   ^ true
 ```
 
-3. All of our swift models should be inheriting from `Object`:
+3. `MyModel` should be inheriting from `Object`, and its subclasses - from `MyModel`:
 
 ```smalltalk
 MyModel class>>swiftClassContainer
@@ -246,7 +246,7 @@ MyModel class>>swiftClassContainer
   ^ container
 ```
 
-4. Be sure to make the property codable and include declaration modifiers:
+4. Be sure to make the property codable and include appropriate declaration modifiers:
 
 ```smalltalk
 MyModel class>>someProperty
