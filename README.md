@@ -20,20 +20,14 @@ As an example, let's start with a simple class that defines a few basic types of
 
 ```smalltalk
 GRObject subclass: #She
+  uses: TMASwiftDescribing
   instanceVariableNames: 'name balance seashore shells'
   classVariableNames: ''
   poolDictionaries: ''
   category: 'SheSellsSeashellsByTheSeashore'!
 ```
 
-After generating accessors for the ivars, let's make it possible to generate swift class declaration from this class:
-
-```smalltalk
-She class>>isSwiftSerializable
-  ^ true
-```
-
-Then define, again on the class side, methods that return magritte description for those properties:
+After generating accessors for the ivars, let's add magritte descriptions for those properties:
 
 ```smalltalk
 She class>>nameDescription
@@ -212,64 +206,17 @@ let foo = MyType<Generic>()
 
 ### How do I make this generate [Realm](https://realm.io) models?
 
-1. Start with a base class for all your models:
+Generation of class description for Realm models requires a few tweaks, and the easiest way to accomplish that is to use `TMASwiftRealmDescribing` trait, as opposed to `TMASwiftDescribing`:
 
 ```smalltalk
 GRObject subclass: #MyModel
-	instanceVariableNames: ''
-	classVariableNames: ''
-	package: 'MyPackage'
-```
-
-2. Make is serializable:
-
-```smalltalk
-MyModel class>>isSwiftSerializable
-  ^ true
-```
-
-3. `MyModel` should be inheriting from `Object`, and its subclasses - from `MyModel`:
-
-```smalltalk
-MyModel class>>swiftClassContainer
-  | container |
-
-  container := self magritteDescription swiftSerializableChildren isEmptyOrNil
-    ifTrue: [ MASwiftClassContainer new
-      swiftName: self name asSymbol;
-      inheritsFrom: #(#Object);
-      yourself ]
-    ifFalse: [ super swiftClassContainer yourself ].
-
-  self ~= MyModel
-    ifTrue: [ container inheritsFrom: (Array with: MyModel name asSymbol) ].
-  ^ container
-```
-
-4. Override #asSwift to return a `MASwiftCanvas` that uses our own document root class which would take care of importing Realm framework:
-
-```smalltalk
-MyModel class>>asSwift
-  ^ MASwiftCanvas builder
-    fullDocument: true;
-    rootClass: MyModelSwiftRoot;
-    render: self
-```
-
-5. Add custom document root:
-
-```smalltalk
-MASwiftRoot subclass: #MyModelSwiftRoot
+  uses: TMASwiftRealmDescribing
   instanceVariableNames: ''
   classVariableNames: ''
   package: 'MyPackage'
-  
-MySwiftRoot>>initialize
-  super initialize.
-  imports add: (MASwiftImportDeclaration named: #RealmSwift). "<- this adds 'import RealmSwift' to the list of file imports"
 ```
 
-6. Base your smalltalk classes on the base class:
+Better yet, let's use that as the base class for all of our models, which allows us to create extensions in Swift, that are applicable to all models:
 
 ```smalltalk
 MyModel subclass: #MyFriend
