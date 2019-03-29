@@ -77,29 +77,25 @@ MASwiftClassWriter >> visitStringDescription: aDescription [
 { #category : #'visiting-description' }
 MASwiftClassWriter >> visitSwiftClassContainer: aDescription [
 	| classDeclaration |
-
 	classDeclaration := MASwiftClassDeclaration new
 		name: aDescription swiftName;
-		inheritanceTypes: (aDescription inheritsFrom ifNotNil: [ :val | val asOrderedCollection ]);
 		yourself.
-
+	aDescription inheritsFrom
+		ifNotNil: [ :val | classDeclaration inheritanceTypes: val asOrderedCollection ].
 	aDescription hasCodableChildren
 		ifTrue: [ classDeclaration inheritanceTypes add: #Codable ].
-
 	aDescription hasStringConvertibleChildren
 		ifTrue: [ classDeclaration inheritanceTypes add: #CustomStringConvertible ].
-
 	stream
 		declaration: classDeclaration
-		with: [ (aDescription swiftSerializableChildren sort: [ :a :b | a priority < b priority ])
+		with: [ (aDescription swiftSerializableChildren
+				sort: [ :a :b | a priority < b priority ])
 				do: [ :each | each writeSwiftDeclarationOf: self object on: stream ]
 				separatedBy: [ stream lf ].
-
 			aDescription swiftSerializableChildren
 				ifNotEmpty: [ stream
 						lf;
 						lf ].
-
 			aDescription childContainers
 				do: [ :aChildContainer | self visit: aChildContainer ]
 				separatedBy: [ stream
