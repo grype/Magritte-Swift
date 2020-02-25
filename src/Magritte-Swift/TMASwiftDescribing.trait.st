@@ -22,20 +22,25 @@ TMASwiftDescribing classSide >> swiftClassContainer [
 	container := self magritteDescription swiftSerializableChildren
 		isEmptyOrNil
 		ifTrue: [ MASwiftClassContainer new
-				swiftName: self name asSymbol;
+				swiftName: self swiftName;
 				inheritsFrom: #(#Object);
 				yourself ]
 		ifFalse: [ (MASwiftClassContainer withAll: self magritteDescription children)
-				swiftName: self name asSymbol;
+				swiftName: self swiftName;
 				isSwiftSerialized: self isSwiftSerializable;
 				yourself ].
 	self superclass isSwiftSerializable
 		ifTrue:
-			[ container inheritsFrom: (Array with: self superclass name asSymbol) ].
+			[ container inheritsFrom: (Array with: self superclass swiftName) ].
 	^ container
 ]
 
 { #category : #'magritte-swift-converting' }
 TMASwiftDescribing classSide >> swiftDocumentRootClass [
 	^ MASwiftRoot
+]
+
+{ #category : #'as yet unclassified' }
+TMASwiftDescribing classSide >> swiftName [
+	^ self name asSymbol
 ]
