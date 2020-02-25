@@ -137,7 +137,6 @@ MASwiftClassWriter >> visitSwiftDeclarationContainer: aDescription [
 { #category : #'visiting-description' }
 MASwiftClassWriter >> visitSwiftEnumContainer: aDescription [
 	| enum |
-
 	enum := MASwiftEnumDeclaration new
 		name: aDescription swiftName;
 		inheritanceTypes: aDescription inheritsFrom;
@@ -145,7 +144,14 @@ MASwiftClassWriter >> visitSwiftEnumContainer: aDescription [
 	stream
 		declaration: enum
 		with: [ aDescription swiftCodableChildren
-				do: [ :each | stream declaration: (MASwiftCaseDeclaration named: each swiftName) ]
+				do: [ :each | 
+					| case |
+					case := MASwiftCaseDeclaration named: each swiftName.
+					each swiftCodingKey
+						ifNotNil: [ :val | 
+							val = each swiftName
+								ifFalse: [ case assignedValue: val ] ].
+					stream declaration: case ]
 				separatedBy: [ stream lf ] ]
 ]
 
