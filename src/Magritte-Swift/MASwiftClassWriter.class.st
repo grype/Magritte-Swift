@@ -63,6 +63,12 @@ MASwiftClassWriter >> visitDateAndTimeDescription: aDescription [
 ]
 
 { #category : #'visiting-description' }
+MASwiftClassWriter >> visitElementDescription: aDescription [
+	aDescription asSwiftVariableDeclaration
+		ifNotNil: [ :aDeclaration | stream declaration: aDeclaration ]
+]
+
+{ #category : #'visiting-description' }
 MASwiftClassWriter >> visitMagnitudeDescription: aDescription [
 	aDescription asSwiftVariableDeclaration
 		ifNotNil: [ :aDeclaration | stream declaration: aDeclaration ]
