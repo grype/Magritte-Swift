@@ -140,6 +140,7 @@ MASwiftClassWriter >> visitSwiftEnumContainer: aDescription [
 	enum := MASwiftEnumDeclaration new
 		name: aDescription swiftName;
 		inheritanceTypes: aDescription inheritsFrom;
+		accessLevelModifiers: #(#private);
 		yourself.
 	stream
 		declaration: enum
